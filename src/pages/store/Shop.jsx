@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import{ useState, useEffect, useRef } from "react";
 
 const categories = [
 	{ label: "All", value: "all" },
@@ -112,8 +112,8 @@ const Shop = () => {
 	const [profileMenuOpen, setProfileMenuOpen] = useState(false);
 
 	// Optional: Close dropdown when clicking outside
-	const profileMenuRef = React.useRef(null);
-	React.useEffect(() => {
+	const profileMenuRef = useRef(null);
+	useEffect(() => {
 		const handleClick = (e) => {
 			if (
 				profileMenuRef.current &&
