@@ -290,6 +290,11 @@ const Shop = () => {
 											strokeWidth='2'
 										/>
 									</svg>
+									{/* Notification Badge */}
+									<span className='absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full px-1.5 py-0.5 min-w-5 text-center'>
+										3
+									</span>
+									
 								</button>
 								{profileMenuOpen && (
 									<div className='absolute right-0 top-full mt-2 min-w-full w-48 bg-white rounded-lg shadow-lg z-10'>
