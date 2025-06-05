@@ -2,6 +2,7 @@ import { useAppContext } from "./context/AppContext";
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import StoreDashboard from "./pages/StoreDashboard";
+import Shop from "./pages/Shop";
 import AddProduct from "./pages/AddProduct";
 import ListProducts from "./pages/ListProducts";
 import EditProduct from "./pages/EditProduct";
@@ -16,9 +17,8 @@ import { ToastContainer } from "react-toastify";
 import "./App.css";
 import "react-toastify/dist/ReactToastify.css";
 
-
 function App() {
-  const { user } = useAppContext();
+	const { user } = useAppContext();
 
 	return (
 		<>
@@ -30,13 +30,17 @@ function App() {
 					element={<Home />}
 				/>
 				<Route
+					path='/shop'
+					element={<Shop />}
+				/>
+				<Route
 					path='/admin/store'
 					element={user ? <StoreDashboard /> : <Login />}
 				/>
-        <Route
-          path='/admin/register'
-          element={<Register />}
-        />
+				<Route
+					path='/admin/register'
+					element={<Register />}
+				/>
 				<Route
 					path='/admin/store/add-product'
 					element={<AddProduct />}
@@ -54,7 +58,7 @@ function App() {
 					element={<Orders />}
 				/>
 				<Route
-					path='/admin/store/order/:id'
+					path='/admin/store/orders/:id'
 					element={<OrderDetails />}
 				/>
 			</Routes>
