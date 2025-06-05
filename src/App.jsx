@@ -1,9 +1,10 @@
 import { useAppContext } from "./context/AppContext";
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
-import StoreDashboard from "./pages/StoreDashboard";
+import StoreDashboard from "./pages/admin/StoreDashboard";
 import Shop from "./pages/store/Shop";
 import Cart from "./pages/store/Cart";
+import ProductPage from "./pages/store/ProductPage";
 import AddProduct from "./pages/admin/AddProduct";
 import ListProducts from "./pages/admin/ListProducts";
 import EditProduct from "./pages/admin/EditProduct";
