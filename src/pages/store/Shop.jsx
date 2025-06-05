@@ -109,6 +109,24 @@ const Shop = () => {
 	const [search, setSearch] = useState("");
 	const [sortBy, setSortBy] = useState("default");
 	const [cart, setCart] = useState(() => new Map());
+	const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+
+	// Optional: Close dropdown when clicking outside
+	const profileMenuRef = React.useRef(null);
+	React.useEffect(() => {
+		const handleClick = (e) => {
+			if (
+				profileMenuRef.current &&
+				!profileMenuRef.current.contains(e.target)
+			) {
+				setProfileMenuOpen(false);
+			}
+		};
+		if (profileMenuOpen) {
+			document.addEventListener("mousedown", handleClick);
+		}
+		return () => document.removeEventListener("mousedown", handleClick);
+	}, [profileMenuOpen]);
 
 	// Add to cart handler
 	const addToCart = (productId) => {
@@ -236,33 +254,77 @@ const Shop = () => {
 									</span>
 								)}
 							</button>
-							<button
-								type='button'
-								className='relative p-2 rounded-full hover:bg-blue-50 transition'
-								aria-label='User Profile'
+							<div
+								className='relative'
+								ref={profileMenuRef}
 							>
-								{/* User Icon */}
-								<svg
-									width='22'
-									height='22'
-									fill='none'
-									viewBox='0 0 24 24'
-									className='text-blue-600'
+								<button
+									type='button'
+									className='relative p-2 rounded-full hover:bg-blue-50 transition'
+									aria-label='User Profile'
+									aria-haspopup='true'
+									aria-expanded={profileMenuOpen}
+									onClick={() => setProfileMenuOpen((open) => !open)}
+									onBlur={() =>
+										setTimeout(() => setProfileMenuOpen(false), 100)
+									}
 								>
-									<circle
-										cx='12'
-										cy='8'
-										r='4'
-										stroke='currentColor'
-										strokeWidth='2'
-									/>
-									<path
-										d='M4 20c0-2.21 3.582-4 8-4s8 1.79 8 4'
-										stroke='currentColor'
-										strokeWidth='2'
-									/>
-								</svg>
-							</button>
+									{/* User Icon */}
+									<svg
+										width='22'
+										height='22'
+										fill='none'
+										viewBox='0 0 24 24'
+										className='text-blue-600'
+									>
+										<circle
+											cx='12'
+											cy='8'
+											r='4'
+											stroke='currentColor'
+											strokeWidth='2'
+										/>
+										<path
+											d='M4 20c0-2.21 3.582-4 8-4s8 1.79 8 4'
+											stroke='currentColor'
+											strokeWidth='2'
+										/>
+									</svg>
+								</button>
+								{profileMenuOpen && (
+									<div className='absolute right-0 top-full mt-2 min-w-full w-48 bg-white rounded-lg shadow-lg z-10'>
+										<ul className='flex flex-col gap-2 py-3 px-5 bg-slate-100 text-gray-500 rounded shadow-lg'>
+											<li>
+												<a
+													href='/profile'
+													className='cursor-pointer block px-4 py-2 text-gray-700 hover:bg-blue-50'
+													aria-label='Profile'
+												>
+													Profile
+												</a>
+											</li>
+											<li>
+												<a
+													href='/orders'
+													className='cursor-pointer block px-4 py-2 text-gray-700 hover:bg-blue-50'
+													aria-label='Orders'
+												>
+													Orders
+												</a>
+											</li>
+											<li>
+												<a
+													href='/logout'
+													className='cursor-pointer block px-4 py-2 text-gray-700 hover:bg-blue-50'
+													aria-label='Logout'
+												>
+													Logout
+												</a>
+											</li>
+										</ul>
+									</div>
+								)}
+							</div>
 						</div>
 					</div>
 				</div>
