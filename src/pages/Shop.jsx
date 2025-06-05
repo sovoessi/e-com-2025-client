@@ -108,6 +108,19 @@ const Shop = () => {
 	const [selectedGender, setSelectedGender] = useState("all");
 	const [search, setSearch] = useState("");
 	const [sortBy, setSortBy] = useState("default");
+	const [cart, setCart] = useState(() => new Map());
+
+	// Add to cart handler
+	const addToCart = (productId) => {
+		setCart((prevCart) => {
+			const newCart = new Map(prevCart);
+			newCart.set(productId, (newCart.get(productId) || 0) + 1);
+			return newCart;
+		});
+	};
+
+	// Total items in cart
+	const cartCount = Array.from(cart.values()).reduce((a, b) => a + b, 0);
 
 	const filteredProducts = products
 		.filter((product) => {
@@ -214,6 +227,14 @@ const Shop = () => {
 										className='text-blue-100'
 									/>
 								</svg>
+								{cartCount > 0 && (
+									<span
+										className='absolute -top-1 -right-1 bg-blue-600 text-white text-xs font-bold rounded-full px-1.5 py-0.5 min-w-5 text-center'
+										aria-label={`${cartCount} items in cart`}
+									>
+										{cartCount}
+									</span>
+								)}
 							</button>
 							<button
 								type='button'
@@ -351,7 +372,11 @@ const Shop = () => {
 										<span className='text-gray-500 text-xs mb-3'>
 											{product.reviews ?? 0} reviews
 										</span>
-										<button className='w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-medium mt-auto'>
+										<button
+											className='w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-medium mt-auto'
+											onClick={() => addToCart(product.id)}
+											aria-label={`Add ${product.name} to cart`}
+										>
 											Add to Cart
 										</button>
 									</div>
