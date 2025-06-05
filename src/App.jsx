@@ -2,20 +2,24 @@ import { useAppContext } from "./context/AppContext";
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import StoreDashboard from "./pages/StoreDashboard";
-import Shop from "./pages/Shop";
-import AddProduct from "./pages/AddProduct";
-import ListProducts from "./pages/ListProducts";
-import EditProduct from "./pages/EditProduct";
-import Orders from "./pages/Orders";
-import OrderDetails from "./pages/OrderDetails";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
+import Shop from "./pages/store/Shop";
+import Cart from "./pages/store/Cart";
+import AddProduct from "./pages/admin/AddProduct";
+import ListProducts from "./pages/admin/ListProducts";
+import EditProduct from "./pages/admin/EditProduct";
+import Orders from "./pages/admin/Orders";
+import OrderDetails from "./pages/admin/OrderDetails";
+import Login from "./pages/admin/Login";
+import Register from "./pages/admin/Register";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import { ToastContainer } from "react-toastify";
 
 import "./App.css";
 import "react-toastify/dist/ReactToastify.css";
+import ContactUs from "./pages/ContactUs";
+import AboutUs from "./pages/AboutUs";
+import PlaceOrder from "./pages/store/PlaceOrder";
 
 function App() {
 	const { user } = useAppContext();
@@ -30,8 +34,32 @@ function App() {
 					element={<Home />}
 				/>
 				<Route
+					path='/contact'
+					element={<ContactUs />}
+				/>
+				<Route
+					path='/about'
+					element={<AboutUs />}
+				/>
+				<Route
 					path='/shop'
 					element={<Shop />}
+				/>
+				<Route
+					path='/shop/products/:productId'
+					element={<ProductPage/>}
+				/>
+				<Route
+					path='/shop/cart'
+					element={<Cart />}
+				/>
+				<Route
+					path="/login"
+					element={<Login />}
+				/>
+				<Route
+					path='/shop/place-order'
+					element={<PlaceOrder />}
 				/>
 				<Route
 					path='/admin/store'

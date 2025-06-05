@@ -27,13 +27,14 @@ const Navbar = () => (
 					to='/about'
 					className='text-gray-700 hover:text-blue-600 transition'
 				>
-					About
+					About Us
+
 				</Link>
 				<Link
 					to='/contact'
 					className='text-gray-700 hover:text-blue-600 transition'
 				>
-					Contact
+					Contact Us
 				</Link>
 				<Link
 					to='/login'
