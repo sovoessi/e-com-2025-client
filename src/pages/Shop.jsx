@@ -111,71 +111,89 @@ const Shop = () => {
 				<h1 className='text-3xl font-bold text-gray-900 mb-8 text-center'>
 					Shop
 				</h1>
-				{/* Filters */}
-				<div className='flex flex-col md:flex-row gap-4 justify-between mb-10'>
-					<div className='flex gap-2 flex-wrap'>
-						{categories.map((cat) => (
-							<button
-								key={cat.value}
-								className={`px-4 py-2 rounded-full border transition text-sm font-medium ${
-									selectedCategory === cat.value
-										? "bg-blue-600 text-white border-blue-600"
-										: "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
-								}`}
-								onClick={() => setSelectedCategory(cat.value)}
-								type='button'
-							>
-								{cat.label}
-							</button>
-						))}
-					</div>
-					<div className='flex gap-2 flex-wrap'>
-						{genders.map((g) => (
-							<button
-								key={g.value}
-								className={`px-4 py-2 rounded-full border transition text-sm font-medium ${
-									selectedGender === g.value
-										? "bg-blue-600 text-white border-blue-600"
-										: "bg-white text-gray-700 border-gray-300 hover:bg-blue-50"
-								}`}
-								onClick={() => setSelectedGender(g.value)}
-								type='button'
-							>
-								{g.label}
-							</button>
-						))}
-					</div>
-				</div>
-				{/* Products Grid */}
-				<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8'>
-					{filteredProducts.length === 0 ? (
-						<div className='col-span-full text-center text-gray-500 py-16'>
-							No products found.
+				<div className='flex flex-col lg:flex-row gap-10'>
+					{/* Sidebar Filters */}
+					<aside className='w-full lg:w-64 bg-white rounded-xl shadow p-6 mb-8 lg:mb-0 flex-shrink-0'>
+						<div>
+							<h2 className='text-lg font-semibold text-gray-800 mb-4'>
+								Categories
+							</h2>
+							<ul className='space-y-2'>
+								{categories.map((cat) => (
+									<li key={cat.value}>
+										<button
+											className={`w-full text-left px-3 py-2 rounded-lg transition font-medium ${
+												selectedCategory === cat.value
+													? "bg-blue-600 text-white"
+													: "text-gray-700 hover:bg-blue-50"
+											}`}
+											onClick={() => setSelectedCategory(cat.value)}
+											type='button'
+											aria-current={selectedCategory === cat.value}
+										>
+											{cat.label}
+										</button>
+									</li>
+								))}
+							</ul>
 						</div>
-					) : (
-						filteredProducts.map((product) => (
-							<div
-								key={product.id}
-								className='bg-white rounded-lg shadow hover:shadow-lg transition p-5 flex flex-col items-center'
-							>
-								<img
-									src={product.image}
-									alt={product.name}
-									className='w-36 h-36 object-cover rounded mb-4'
-									loading='lazy'
-								/>
-								<h3 className='text-base font-semibold text-gray-800 mb-1 text-center'>
-									{product.name}
-								</h3>
-								<span className='text-blue-600 font-bold text-lg mb-3'>
-									{product.price}
-								</span>
-								<button className='px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-sm font-medium'>
-									Add to Cart
-								</button>
-							</div>
-						))
-					)}
+						<div className='mt-8'>
+							<h2 className='text-lg font-semibold text-gray-800 mb-4'>
+								Gender
+							</h2>
+							<ul className='space-y-2'>
+								{genders.map((g) => (
+									<li key={g.value}>
+										<button
+											className={`w-full text-left px-3 py-2 rounded-lg transition font-medium ${
+												selectedGender === g.value
+													? "bg-blue-600 text-white"
+													: "text-gray-700 hover:bg-blue-50"
+											}`}
+											onClick={() => setSelectedGender(g.value)}
+											type='button'
+											aria-current={selectedGender === g.value}
+										>
+											{g.label}
+										</button>
+									</li>
+								))}
+							</ul>
+						</div>
+					</aside>
+					{/* Products Grid */}
+					<section className='flex-1'>
+						<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8'>
+							{filteredProducts.length === 0 ? (
+								<div className='col-span-full text-center text-gray-500 py-16'>
+									No products found.
+								</div>
+							) : (
+								filteredProducts.map((product) => (
+									<div
+										key={product.id}
+										className='bg-white rounded-lg shadow hover:shadow-lg transition p-5 flex flex-col items-center'
+									>
+										<img
+											src={product.image}
+											alt={product.name}
+											className='w-36 h-36 object-cover rounded mb-4'
+											loading='lazy'
+										/>
+										<h3 className='text-base font-semibold text-gray-800 mb-1 text-center'>
+											{product.name}
+										</h3>
+										<span className='text-blue-600 font-bold text-lg mb-3'>
+											{product.price}
+										</span>
+										<button className='px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-sm font-medium'>
+											Add to Cart
+										</button>
+									</div>
+								))
+							)}
+						</div>
+					</section>
 				</div>
 			</div>
 		</main>
