@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 
-// Mock order data (should be fetched in real app)
-const orders = [
+// Orders are hardcoded in Orders.jsx, so we need to match the param name and route
+const initialOrders = [
 	{
 		id: "ORD-1001",
 		date: "2025-06-01",
@@ -39,10 +39,22 @@ const statusColors = {
 	Processing: "bg-yellow-100 text-yellow-700",
 };
 
+const statusOptions = ["Processing", "Shipped", "Delivered"];
+
 const OrderDetails = () => {
-	const { orderId } = useParams();
+	const { id } = useParams(); // <-- match param name from route: /admin/store/orders/:id
 	const navigate = useNavigate();
-	const order = orders.find((o) => o.id === orderId);
+	const [orders, setOrders] = useState(initialOrders);
+
+	const orderIndex = orders.findIndex((o) => o.id === id);
+	const order = orders[orderIndex];
+
+	const handleStatusChange = (e) => {
+		const newStatus = e.target.value;
+		const updatedOrders = [...orders];
+		updatedOrders[orderIndex] = { ...order, status: newStatus };
+		setOrders(updatedOrders);
+	};
 
 	if (!order) {
 		return (
@@ -71,49 +83,73 @@ const OrderDetails = () => {
 				>
 					&larr; Back to Orders
 				</button>
-				<div className='bg-white rounded-lg shadow p-6'>
-					<h1 className='text-2xl font-bold text-gray-900 mb-2'>
-						Order {order.id}
-					</h1>
-					<div className='mb-4 flex flex-wrap gap-4 items-center'>
-						<span className='text-gray-600 text-sm'>
-							Placed on {order.date}
-						</span>
-						<span
-							className={`px-3 py-1 rounded-full text-xs font-medium ${
-								statusColors[order.status] || "bg-gray-100 text-gray-700"
-							}`}
-						>
-							{order.status}
-						</span>
-					</div>
-					<div className='mb-6'>
-						<div className='font-semibold text-gray-800 mb-1'>
-							Shipping Address
-						</div>
-						<div className='text-gray-600 text-sm'>{order.address}</div>
-					</div>
-					<div>
-						<div className='font-semibold text-gray-800 mb-2'>Items</div>
-						<div className='divide-y'>
-							{order.items.map((item, idx) => (
-								<div
-									key={idx}
-									className='flex justify-between py-2 text-sm'
-								>
-									<span>
-										{item.name}{" "}
-										<span className='text-gray-400'>x{item.qty}</span>
-									</span>
-									<span className='font-medium'>{item.price}</span>
-								</div>
-							))}
+				<div className='bg-white rounded-2xl shadow-lg p-8 border border-gray-100'>
+					<div className='flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-2'>
+						<h1 className='text-2xl font-bold text-gray-900'>
+							Order <span className='text-blue-600'>{order.id}</span>
+						</h1>
+						<div className='flex items-center gap-2'>
+							<span
+								className={`px-4 py-1 rounded-full text-xs font-semibold tracking-wide ${
+									statusColors[order.status] || "bg-gray-100 text-gray-700"
+								}`}
+							>
+								{order.status}
+							</span>
+							<select
+								value={order.status}
+								onChange={handleStatusChange}
+								className='ml-2 border rounded px-2 py-1 text-xs'
+								aria-label='Update order status'
+							>
+								{statusOptions.map((status) => (
+									<option
+										key={status}
+										value={status}
+									>
+										{status}
+									</option>
+								))}
+							</select>
 						</div>
 					</div>
-					<div className='flex justify-end mt-6'>
+					<div className='mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2'>
+						<span className='text-gray-500 text-sm'>
+							Placed on{" "}
+							<span className='font-medium text-gray-700'>{order.date}</span>
+						</span>
 						<span className='text-lg font-bold text-blue-600'>
 							Total: {order.total}
 						</span>
+					</div>
+					{order.address && (
+						<div className='mb-6'>
+							<div className='font-semibold text-gray-800 mb-1'>
+								Shipping Address
+							</div>
+							<div className='text-gray-600 text-sm'>{order.address}</div>
+						</div>
+					)}
+					<div>
+						<div className='font-semibold text-gray-800 mb-3'>Items</div>
+						<div className='divide-y border rounded-lg overflow-hidden'>
+							{order.items.map((item, idx) => (
+								<div
+									key={idx}
+									className='flex justify-between items-center py-3 px-4 bg-gray-50 even:bg-white'
+								>
+									<span className='flex-1 text-gray-800'>
+										{item.name}
+										<span className='ml-2 text-gray-400 font-normal'>
+											x{item.qty}
+										</span>
+									</span>
+									<span className='font-medium text-gray-700'>
+										{item.price}
+									</span>
+								</div>
+							))}
+						</div>
 					</div>
 				</div>
 			</div>
