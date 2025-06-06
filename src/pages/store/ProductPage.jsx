@@ -80,12 +80,6 @@ const ProductPage = () => {
 		);
 	};
 
-	// Proceed to payment handler (best practice: add to cart, then redirect)
-	const handleBuyNow = () => {
-		handleAddToCart();
-		window.location.href = "/checkout";
-	};
-
 	// Cart count
 	const cartCount = Array.from(cart.values()).reduce((a, b) => a + b, 0);
 
@@ -226,34 +220,66 @@ const ProductPage = () => {
 			<div className='max-w-4xl mx-auto px-4 flex flex-col md:flex-row gap-10'>
 				{/* Product Images */}
 				<div className='flex-1 flex flex-col items-center'>
-					<div className='w-full flex items-center justify-center mb-4'>
+					<div className='w-full flex items-center justify-center mb-6 relative'>
 						<img
 							src={selectedImage}
 							alt={product.name}
-							className='rounded-xl shadow-lg w-full max-w-xs object-cover'
+							className='rounded-2xl shadow-2xl w-full max-w-md aspect-square object-cover border-4 border-blue-100 transition-all duration-300'
+							style={{ background: "#f3f4f6" }}
+							loading='eager'
 						/>
+						{/* Marketing badge */}
+						<span className='absolute top-4 left-4 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg uppercase tracking-wide animate-pulse'>
+							Bestseller
+						</span>
 					</div>
-					<div className='flex gap-2'>
+					<div className='flex gap-3 mt-2'>
 						{product.images.map((img, idx) => (
 							<button
 								key={img}
 								type='button'
 								onClick={() => setSelectedImage(img)}
-								className={`border-2 rounded-lg p-1 transition ${
-									selectedImage === img
-										? "border-blue-600"
-										: "border-transparent hover:border-gray-300"
-								}`}
+								className={`border-2 rounded-xl p-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400
+                                    ${
+																			selectedImage === img
+																				? "border-blue-600 scale-105 shadow-lg"
+																				: "border-transparent hover:border-blue-300"
+																		}
+                                `}
 								aria-label={`View product image ${idx + 1}`}
+								tabIndex={0}
 							>
 								<img
 									src={img}
 									alt={`Thumbnail ${idx + 1}`}
-									className='w-16 h-16 object-cover rounded'
+									className='w-16 h-16 object-cover rounded-xl'
 									loading='lazy'
+									style={{
+										opacity: selectedImage === img ? 1 : 0.7,
+										boxShadow:
+											selectedImage === img ? "0 0 0 2px #2563eb" : undefined,
+									}}
 								/>
 							</button>
 						))}
+					</div>
+					{/* Zoom hint */}
+					<div className='mt-2 text-xs text-gray-400 flex items-center gap-1'>
+						<svg
+							className='w-4 h-4 text-blue-400'
+							fill='none'
+							stroke='currentColor'
+							strokeWidth='2'
+							viewBox='0 0 24 24'
+						>
+							<circle
+								cx='11'
+								cy='11'
+								r='8'
+							/>
+							<path d='M21 21l-4.35-4.35' />
+						</svg>
+						<span>Click thumbnails to view</span>
 					</div>
 				</div>
 				{/* Product Details */}
