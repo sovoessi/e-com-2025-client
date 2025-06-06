@@ -21,6 +21,8 @@ import "react-toastify/dist/ReactToastify.css";
 import ContactUs from "./pages/ContactUs";
 import AboutUs from "./pages/AboutUs";
 import PlaceOrder from "./pages/store/PlaceOrder";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import Terms from "./pages/Terms";
 
 function App() {
 	const { user } = useAppContext();
@@ -43,19 +45,27 @@ function App() {
 					element={<AboutUs />}
 				/>
 				<Route
+					path='/privacy-policy'
+					element={<PrivacyPolicy />}
+				/>
+				<Route
+					path='/terms'
+					element={<Terms />}
+				/>
+				<Route
 					path='/shop'
 					element={<Shop />}
 				/>
 				<Route
 					path='/shop/products/:productId'
-					element={<ProductPage/>}
+					element={<ProductPage />}
 				/>
 				<Route
 					path='/shop/cart'
 					element={<Cart />}
 				/>
 				<Route
-					path="/login"
+					path='/login'
 					element={<Login />}
 				/>
 				<Route
