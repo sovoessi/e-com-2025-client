@@ -1,4 +1,5 @@
 import{ useState, useEffect, useRef } from "react";
+import { useAppContext } from "../../context/AppContext";
 
 const categories = [
 	{ label: "All", value: "all" },
@@ -111,6 +112,8 @@ const Shop = () => {
 	const [cart, setCart] = useState(() => new Map());
 	const [profileMenuOpen, setProfileMenuOpen] = useState(false);
 
+	const {navigate} = useAppContext();
+
 	// Optional: Close dropdown when clicking outside
 	const profileMenuRef = useRef(null);
 	useEffect(() => {
@@ -135,6 +138,14 @@ const Shop = () => {
 			newCart.set(productId, (newCart.get(productId) || 0) + 1);
 			return newCart;
 		});
+	};
+
+	// Handle cart click (could open a modal or redirect to cart page)
+	const handleCartClick = () => {
+		// For now, just log the cart contents
+		console.log("Cart contents:", Array.from(cart.entries()));
+		// You can implement cart modal or redirect logic here
+		navigate("/cart");
 	};
 
 	// Total items in cart
@@ -213,6 +224,7 @@ const Shop = () => {
 						</div>
 						<div className='flex items-center gap-2 justify-end'>
 							<button
+								onClick={handleCartClick}
 								type='button'
 								className='relative p-2 rounded-full hover:bg-blue-50 transition'
 								aria-label='Basket'

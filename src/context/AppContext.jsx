@@ -92,6 +92,7 @@ export const AppProvider = ({ children }) => {
 		error,
 		token,
 		user,
+		navigate,
 		login,
 		register,
 		handleLogin,
