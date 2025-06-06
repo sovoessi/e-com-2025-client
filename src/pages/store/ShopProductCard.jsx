@@ -1,34 +1,31 @@
-import React from 'react'
+import React from "react";
+import StarRating from "../../components/StarRating";
 
-const ShopProductCard = ({product, addToCart}) => {
-  return (
-		<>
-			<div className='w-full aspect-[4/3] mb-4 flex items-center justify-center overflow-hidden rounded-lg bg-gray-100'>
-				<img
-					src={product.image}
-					alt={product.name}
-					className='w-full h-full object-cover object-center'
-					loading='lazy'
-				/>
-			</div>
-			<h3 className='text-base font-semibold text-gray-800 mb-1 text-center w-full truncate'>
-				{product.name}
-			</h3>
-			<span className='text-blue-600 font-bold text-lg mb-1'>
-				{product.price}
+const ShopProductCard = ({ product, addToCart }) => (
+	<div className='flex flex-col items-center text-center h-full'>
+		<div className='w-full aspect-[4/3] mb-4 flex items-center justify-center overflow-hidden rounded-lg bg-gray-100'>
+			<img
+				src={product.image}
+				alt={product.name}
+				className='w-full h-full object-cover object-center'
+				loading='lazy'
+			/>
+		</div>
+		<h3 className='text-lg font-semibold mb-1'>{product.name}</h3>
+		<div className='flex flex-col items-center justify-center mb-2'>
+			<StarRating rating={product.rating || 0} />
+			<span className='mt-1 text-xs text-gray-500'>
+				({product.reviews} reviews)
 			</span>
-			<span className='text-gray-500 text-xs mb-3'>
-				{product.reviews ?? 0} reviews
-			</span>
-			<button
-				className='w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-medium mt-auto'
-				onClick={() => addToCart(product.id)}
-				aria-label={`Add ${product.name} to cart`}
-			>
-				Add to Cart
-			</button>
-		</>
-	);
-}
+		</div>
+		<div className='font-bold text-blue-700 mb-3'>{product.price}</div>
+		<button
+			onClick={() => addToCart(product.id)}
+			className='bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition'
+		>
+			Add to Cart
+		</button>
+	</div>
+);
 
-export default ShopProductCard
+export default ShopProductCard;

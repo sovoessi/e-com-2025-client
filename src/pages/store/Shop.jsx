@@ -28,6 +28,7 @@ const products = [
 		category: "clothing",
 		gender: "men",
 		reviews: 120,
+		rating: 4.2, // Add this
 	},
 	{
 		id: 2,
@@ -38,6 +39,7 @@ const products = [
 		category: "sandals",
 		gender: "women",
 		reviews: 98,
+		rating: 4.5, // Add this
 	},
 	{
 		id: 3,
@@ -48,6 +50,7 @@ const products = [
 		category: "tote-bags",
 		gender: "kids",
 		reviews: 45,
+		rating: 4.0, // Add this
 	},
 	{
 		id: 4,
@@ -58,6 +61,7 @@ const products = [
 		category: "mugs",
 		gender: "all",
 		reviews: 210,
+		rating: 4.8, // Add this
 	},
 	{
 		id: 5,
@@ -68,6 +72,7 @@ const products = [
 		category: "tote-bags",
 		gender: "women",
 		reviews: 67,
+		rating: 4.3, // Add this
 	},
 	{
 		id: 6,
@@ -78,6 +83,7 @@ const products = [
 		category: "sandals",
 		gender: "men",
 		reviews: 80,
+		rating: 4.6, // Add this
 	},
 	{
 		id: 7,
@@ -88,6 +94,7 @@ const products = [
 		category: "mugs",
 		gender: "kids",
 		reviews: 34,
+		rating: 2.1, // Add this
 	},
 	{
 		id: 8,
@@ -98,6 +105,7 @@ const products = [
 		category: "accessories",
 		gender: "all",
 		reviews: 150,
+		rating: 1.1, // Add this
 	},
 ];
 
