@@ -2,6 +2,6 @@
 
 [x] rating star review functionality
 [x] search products
-[] store product page implementation
+[x] store product page implementation
 
 
