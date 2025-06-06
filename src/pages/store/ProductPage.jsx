@@ -219,40 +219,42 @@ const ProductPage = () => {
 			</div>
 			<div className='max-w-4xl mx-auto px-4 flex flex-col md:flex-row gap-10'>
 				{/* Product Images */}
-				<div className='flex-1 flex flex-col items-center'>
-					<div className='w-full flex items-center justify-center mb-6 relative'>
-						<img
-							src={selectedImage}
-							alt={product.name}
-							className='rounded-2xl shadow-2xl w-full max-w-md aspect-square object-cover border-4 border-blue-100 transition-all duration-300'
-							style={{ background: "#f3f4f6" }}
-							loading='eager'
-						/>
-						{/* Marketing badge */}
-						<span className='absolute top-4 left-4 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg uppercase tracking-wide animate-pulse'>
-							Bestseller
-						</span>
+				<div className='flex-1 flex flex-col items-center md:items-stretch md:w-1/2'>
+					<div className='flex-1 flex items-center justify-center mb-6 relative'>
+						<div className='w-full aspect-[4/3] bg-gray-100 rounded-2xl shadow-lg border border-blue-100 flex items-center justify-center overflow-hidden transition-all duration-300'>
+							<img
+								src={selectedImage}
+								alt={product.name}
+								className='object-cover w-full h-full transition-transform duration-300 hover:scale-105'
+								loading='eager'
+								style={{ background: "#f3f4f6" }}
+							/>
+							{/* Marketing badge */}
+							<span className='absolute top-4 left-4 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg uppercase tracking-wide animate-pulse z-10'>
+								Bestseller
+							</span>
+						</div>
 					</div>
-					<div className='flex gap-3 mt-2'>
+					<div className='flex gap-2 mt-2 justify-center'>
 						{product.images.map((img, idx) => (
 							<button
 								key={img}
 								type='button'
 								onClick={() => setSelectedImage(img)}
-								className={`border-2 rounded-xl p-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400
-                                    ${
-																			selectedImage === img
-																				? "border-blue-600 scale-105 shadow-lg"
-																				: "border-transparent hover:border-blue-300"
-																		}
-                                `}
+								className={`border rounded-lg p-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400
+                        ${
+													selectedImage === img
+														? "border-blue-100 scale-105 shadow"
+														: "border-transparent hover:border-blue-200"
+												}
+                    `}
 								aria-label={`View product image ${idx + 1}`}
 								tabIndex={0}
 							>
 								<img
 									src={img}
 									alt={`Thumbnail ${idx + 1}`}
-									className='w-16 h-16 object-cover rounded-xl'
+									className='w-20 h-16 object-cover rounded-lg'
 									loading='lazy'
 									style={{
 										opacity: selectedImage === img ? 1 : 0.7,
@@ -264,7 +266,7 @@ const ProductPage = () => {
 						))}
 					</div>
 					{/* Zoom hint */}
-					<div className='mt-2 text-xs text-gray-400 flex items-center gap-1'>
+					<div className='mt-2 text-xs text-gray-400 flex items-center gap-1 justify-center'>
 						<svg
 							className='w-4 h-4 text-blue-400'
 							fill='none'
@@ -283,7 +285,7 @@ const ProductPage = () => {
 					</div>
 				</div>
 				{/* Product Details */}
-				<div className='flex-1 flex flex-col gap-6 bg-white rounded-2xl shadow-xl p-8 md:p-10'>
+				<div className='flex-1 flex flex-col gap-6 bg-white rounded-2xl shadow-xl p-8 md:p-10 md:w-1/2'>
 					<h1 className='text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight mb-2'>
 						{product.name}
 					</h1>
