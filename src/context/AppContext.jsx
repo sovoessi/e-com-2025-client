@@ -17,6 +17,119 @@ export const AppProvider = ({ children }) => {
 	const navigate = useNavigate();
 
 	const API_URL = import.meta.env.VITE_API_URL;
+
+	// fetch products from the API
+	const fetchProducts = async () => {
+		setLoading(true);
+		try {
+			const response = await axios.get(`${API_URL}/products`);
+			return response.data;
+		} catch (err) {
+			setError(err.message);
+			toast.error("Failed to fetch products.");
+			return [];
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	// fetch product by ID from the API
+	const fetchProductById = async (id) => {
+		setLoading(true);
+		try {
+			const response = await axios.get(`${API_URL}/products/${id}`);
+			return response.data;
+		} catch (err) {
+			setError(err.message);
+			toast("Failed to fetch product details.");
+			return null;
+		} finally {
+			setLoading(false);
+		}
+	}
+
+	// update product by ID
+	const updateProductById = async (id, productData) => {
+		setLoading(true);
+		try {
+			const response = await axios.put(`${API_URL}/products/${id}`, productData, {
+				headers: {	
+					Authorization: `Bearer ${token}`,
+				},
+			});
+			toast("Product updated successfully!");
+			return response.data;
+		}
+		catch (err) {
+			setError(err.message);
+			toast("Failed to update product.");
+			return null;
+		}
+		finally {
+			setLoading(false);
+		}	
+	};
+
+	// delete product by ID
+	const deleteProductById = async (id) => {
+		setLoading(true);
+		try {
+			await axios.delete(`${API_URL}/products/${id}`, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+			toast("Product deleted successfully!");
+		}
+		catch (err) {
+			setError(err.message);
+			toast("Failed to delete product.");
+		}
+		finally {
+			setLoading(false);
+		}
+	};
+
+	// create new product
+	const createProduct = async (productData) => {
+		setLoading(true);
+		try {
+			const response = await axios.post(`${API_URL}/products`, productData, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+			toast("Product created successfully!");
+			return response.data;
+		} catch (err) {
+			setError(err.message);
+			toast("Failed to create product.");
+			return null;
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	// fetch user profile
+	const fetchUserProfile = async () => {
+		setLoading(true);
+		try {
+			const response = await axios.get(`${API_URL}/auth/profile`, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+			setUser(response.data);
+			sessionStorage.setItem("user", JSON.stringify(response.data));
+		}
+		catch (err) {
+			setError(err.message);
+			toast("Failed to fetch user profile.");
+		} finally {
+			setLoading(false);
+		}
+	};
+
 	// Handle user login
 	const login = async (email, password) => {
 		setLoading(true);
@@ -90,6 +203,13 @@ export const AppProvider = ({ children }) => {
 	const contextValue = {
 		loading,
 		error,
+		toast,
+		fetchProducts,
+		fetchProductById,
+		updateProductById,
+		deleteProductById,
+		createProduct,
+		fetchUserProfile,
 		token,
 		user,
 		navigate,
