@@ -1,5 +1,6 @@
-import{ useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAppContext } from "../../context/AppContext";
+import ShopProductCard from "./ShopProductCard";
 
 const categories = [
 	{ label: "All", value: "all" },
@@ -112,7 +113,7 @@ const Shop = () => {
 	const [cart, setCart] = useState(() => new Map());
 	const [profileMenuOpen, setProfileMenuOpen] = useState(false);
 
-	const {navigate} = useAppContext();
+	const { navigate } = useAppContext();
 
 	// Optional: Close dropdown when clicking outside
 	const profileMenuRef = useRef(null);
@@ -306,7 +307,6 @@ const Shop = () => {
 									<span className='absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full px-1.5 py-0.5 min-w-5 text-center'>
 										3
 									</span>
-									
 								</button>
 								{profileMenuOpen && (
 									<div className='absolute right-0 top-full mt-2 min-w-full w-48 bg-white rounded-lg shadow-lg z-10'>
@@ -434,30 +434,10 @@ const Shop = () => {
 										key={product.id}
 										className='bg-white rounded-xl shadow hover:shadow-xl transition p-6 flex flex-col items-center'
 									>
-										<div className='w-full aspect-[4/3] mb-4 flex items-center justify-center overflow-hidden rounded-lg bg-gray-100'>
-											<img
-												src={product.image}
-												alt={product.name}
-												className='w-full h-full object-cover object-center'
-												loading='lazy'
-											/>
-										</div>
-										<h3 className='text-base font-semibold text-gray-800 mb-1 text-center w-full truncate'>
-											{product.name}
-										</h3>
-										<span className='text-blue-600 font-bold text-lg mb-1'>
-											{product.price}
-										</span>
-										<span className='text-gray-500 text-xs mb-3'>
-											{product.reviews ?? 0} reviews
-										</span>
-										<button
-											className='w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-medium mt-auto'
-											onClick={() => addToCart(product.id)}
-											aria-label={`Add ${product.name} to cart`}
-										>
-											Add to Cart
-										</button>
+										<ShopProductCard
+											product={product}
+											addToCart={addToCart}
+										/>
 									</div>
 								))
 							)}
