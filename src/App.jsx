@@ -1,33 +1,40 @@
 import { useAppContext } from "./context/AppContext";
 import { Routes, Route } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+
 import Home from "./pages/Home";
+import ContactUs from "./pages/ContactUs";
+import AboutUs from "./pages/AboutUs";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import Terms from "./pages/Terms";
+
 import StoreDashboard from "./pages/admin/StoreDashboard";
-import ProductPage from "./pages/store/ProductPage";
-import Shop from "./pages/store/Shop";
-import Cart from "./pages/store/Cart";
 import AddProduct from "./pages/admin/AddProduct";
 import ListProducts from "./pages/admin/ListProducts";
 import EditProduct from "./pages/admin/EditProduct";
 import OrdersAdmin from "./pages/admin/OrdersAdmin";
 import OrderDetailsAdmin from "./pages/admin/OrderDetailsAdmin";
-import OrdersUser from "./pages/store/OrdersUser";
-import OrderDetailsUser from "./pages/store/OrderDetailsUser";
 import Login from "./pages/admin/Login";
 import Register from "./pages/admin/Register";
+
+import ProductPage from "./pages/store/ProductPage";
+import Shop from "./pages/store/Shop";
+import Cart from "./pages/store/Cart";
+import OrdersUser from "./pages/store/OrdersUser";
+import OrderDetailsUser from "./pages/store/OrderDetailsUser";
+import Profile from "./pages/store/Profile";
+import PlaceOrder from "./pages/store/PlaceOrder";
+
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import { ToastContainer } from "react-toastify";
 
 import "./App.css";
 import "react-toastify/dist/ReactToastify.css";
-import ContactUs from "./pages/ContactUs";
-import AboutUs from "./pages/AboutUs";
-import PlaceOrder from "./pages/store/PlaceOrder";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
-import Terms from "./pages/Terms";
+
+
 
 function App() {
-	const { isAdmin } = useAppContext();
+	const { user, isAdmin } = useAppContext();
 
 	return (
 		<>
@@ -86,6 +93,10 @@ function App() {
 				<Route
 					path='/shop/orders/:id'
 					element={<OrderDetailsUser />}
+				/>
+				<Route
+				path="/shop/profile"
+				element={user ? <Profile/>:<Login />}
 				/>
 				<Route
 					path='/admin/store'

@@ -170,9 +170,16 @@ export const AppProvider = ({ children }) => {
 	const handleLogin = (userData) => {
 		setToken(userData.token);
 		setUser(userData.user);
+		
 		sessionStorage.setItem("token", userData.token);
 		sessionStorage.setItem("user", JSON.stringify(userData.user));
-		navigate("/admin");
+		if (userData.user.role === "admin") {
+			setIsAdmin(true);
+			navigate("/admin/store");
+		}else {
+			setIsAdmin(false);
+			navigate("/shop/profile");
+		}
 		toast("Logged in successfully!");
 	};
 
@@ -192,14 +199,23 @@ export const AppProvider = ({ children }) => {
 		if (storedToken) {
 			setToken(storedToken);
 		}
-	}, []);
+	}, [token]);
 	// Fetch user from session storage on initial load
 	useEffect(() => {
 		const storedUser = sessionStorage.getItem("user");
 		if (storedUser) {
 			setUser(JSON.parse(storedUser));
 		}
-	}, []);
+	}, [user]);
+
+	// Check if user is admin
+	useEffect(() => {
+		if (user && user.role === "admin") {
+			setIsAdmin(true);
+		} else {
+			setIsAdmin(false);
+		}
+	}, [user]);
 
 	const contextValue = {
 		loading,
