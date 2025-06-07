@@ -79,13 +79,13 @@ const Navbar = () => {
 						to='/about'
 						className='text-gray-700 hover:text-blue-600 transition'
 					>
-						About Us
+						About us
 					</Link>
 					<Link
 						to='/contact'
 						className='text-gray-700 hover:text-blue-600 transition'
 					>
-						Contact Us
+						Contact us
 					</Link>
 					{username ? (
 						<div className='flex items-center gap-2 ml-4'>

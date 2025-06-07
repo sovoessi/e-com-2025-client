@@ -19,16 +19,17 @@ const AboutUs = () => (
 				<p>
 					<span className='font-semibold text-blue-600'>Why Shop With Us?</span>
 				</p>
+				<ul className='list-disc ml-6 mt-2'>
+					<li>Exclusive member-only offers and flash sales</li>
+					<li>Fast, reliable shipping and easy returns</li>
+					<li>Friendly customer support, always here for you</li>
+					<li>Secure checkout and privacy-first policies</li>
+				</ul>
 				<p>
-					<ul className='list-disc ml-6 mt-2'>
-						<li>Exclusive member-only offers and flash sales</li>
-						<li>Fast, reliable shipping and easy returns</li>
-						<li>Friendly customer support, always here for you</li>
-						<li>Secure checkout and privacy-first policies</li>
-					</ul>
 					Join thousands of happy customers who trust E-Com 2025 for their
 					everyday needs. Thank you for being part of our journey!
 				</p>
+				
 			</div>
 		</div>
 	</main>

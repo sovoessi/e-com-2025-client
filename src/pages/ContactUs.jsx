@@ -18,7 +18,7 @@ const ContactUs = () => {
 		<main className='min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center py-12 px-4'>
 			<div className='max-w-lg w-full bg-white p-8 rounded-2xl shadow-xl border border-gray-100'>
 				<h1 className='text-3xl font-extrabold text-gray-900 mb-4 text-center'>
-					Contact Us
+					Contact us
 				</h1>
 				<p className='text-gray-700 text-lg mb-6 text-center'>
 					Have a question, feedback, or need help? Our team is here for you!
