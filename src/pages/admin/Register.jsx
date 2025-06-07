@@ -1,14 +1,17 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useAppContext } from "../../context/AppContext";
 
 const Register = () => {
   const [form, setForm] = useState({
-    name: "",
+    username: "",
     email: "",
     password: "",
     confirm: "",
   });
   const [error, setError] = useState("");
+
+  const {navigate, toast, register} = useAppContext();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -17,16 +20,23 @@ const Register = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!form.name || !form.email || !form.password || !form.confirm) {
+    if (!form.username || !form.email || !form.password || !form.confirm) {
       setError("Please fill in all fields.");
+      toast.error(error);
       return;
     }
     if (form.password !== form.confirm) {
       setError("Passwords do not match.");
+      toast.error(error);
       return;
     }
-    // Simulate registration success
-    alert("Registration successful! (Replace with real logic)");
+    register(form.username, form.email, form.password)
+      .catch((err) => {
+        setError(err.message || "Registration failed. Please try again.");
+        toast.error(error);
+      });
+    toast("Registration successful! ");
+    navigate("/shop");
   };
 
   return (
@@ -42,20 +52,20 @@ const Register = () => {
           <div>
             <label
               className="block text-gray-700 text-sm font-medium mb-1"
-              htmlFor="name"
+              htmlFor="username"
             >
-              Full Name
+              Your Username
             </label>
             <input
               id="name"
-              name="name"
+              name="username"
               type="text"
-              autoComplete="name"
+              autoComplete="username"
               required
               className="w-full border rounded px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              value={form.name}
+              value={form.username}
               onChange={handleChange}
-              placeholder="Your name"
+              placeholder="Your username"
             />
           </div>
           <div>
