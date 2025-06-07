@@ -46,15 +46,9 @@ const Cart = () => {
       ? "You qualify for free shipping!"
       : `Add $${(freeShippingThreshold - subtotal).toFixed(2)} for free shipping`;
 
-  // Payment handlers (mock)
-  const handleStripeCheckout = () => {
-    alert("Redirecting to Stripe checkout...");
-  };
-  const handleCBCheckout = () => {
-    alert("Paiement CB (carte bancaire) non disponible en démo.");
-  };
-  const handlePaypalCheckout = () => {
-    alert("Redirecting to PayPal...");
+  // Place order handler
+  const handlePlaceOrder = () => {
+    window.location.href = "/shop/place-order";
   };
 
   return (
@@ -140,31 +134,8 @@ const Cart = () => {
             </div>
             <div className="mt-8 flex flex-col gap-4">
               <button
-                onClick={handleStripeCheckout}
+                onClick={handlePlaceOrder}
                 className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white py-3 rounded-lg font-bold text-lg shadow hover:bg-blue-700 transition"
-              >
-                <svg
-                  className="w-6 h-6"
-                  viewBox="0 0 32 32"
-                  fill="currentColor"
-                >
-                  <rect width="32" height="32" rx="8" fill="#635BFF" />
-                  <text
-                    x="16"
-                    y="22"
-                    textAnchor="middle"
-                    fontSize="14"
-                    fill="#fff"
-                    fontFamily="Arial"
-                  >
-                    S
-                  </text>
-                </svg>
-                Pay with Stripe
-              </button>
-              <button
-                onClick={handleCBCheckout}
-                className="w-full flex items-center justify-center gap-2 bg-gray-900 text-white py-3 rounded-lg font-bold text-lg shadow hover:bg-gray-800 transition"
               >
                 <svg
                   className="w-6 h-6"
@@ -181,32 +152,14 @@ const Cart = () => {
                     stroke="#2563eb"
                     strokeWidth="2"
                   />
-                  <rect x="4" y="10" width="6" height="2" fill="#2563eb" />
+                  <path
+                    d="M7 12h10M7 16h6"
+                    stroke="#2563eb"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
                 </svg>
-                Pay with CB
-              </button>
-              <button
-                onClick={handlePaypalCheckout}
-                className="w-full flex items-center justify-center gap-2 bg-yellow-400 text-gray-900 py-3 rounded-lg font-bold text-lg shadow hover:bg-yellow-300 transition"
-              >
-                <svg
-                  className="w-6 h-6"
-                  viewBox="0 0 32 32"
-                  fill="none"
-                >
-                  <rect width="32" height="32" rx="8" fill="#fff" />
-                  <text
-                    x="16"
-                    y="22"
-                    textAnchor="middle"
-                    fontSize="14"
-                    fill="#003087"
-                    fontFamily="Arial"
-                  >
-                    P
-                  </text>
-                </svg>
-                Pay with PayPal
+                Proceed to Checkout
               </button>
             </div>
             <div className="mt-6 text-center text-xs text-gray-400">
