@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useAppContext } from "../../context/AppContext";
 
 // Example product data (replace with real data/fetch in production)
 const product = {
@@ -49,6 +50,8 @@ const ProductPage = () => {
 	const [cart, setCart] = useState(() => new Map());
 	const [profileMenuOpen, setProfileMenuOpen] = useState(false);
 
+  const {navigate} = useAppContext();
+
 	const profileMenuRef = useRef(null);
 
 	// Close profile dropdown when clicking outside
@@ -96,6 +99,7 @@ const ProductPage = () => {
 						})
 						.join("\n")}`
 		);
+    navigate("/shop/cart");
 	};
 
 	return (

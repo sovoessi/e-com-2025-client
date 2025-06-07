@@ -154,7 +154,7 @@ const Shop = () => {
 		// For now, just log the cart contents
 		console.log("Cart contents:", Array.from(cart.entries()));
 		// You can implement cart modal or redirect logic here
-		navigate("/cart");
+		navigate("/shop/cart");
 	};
 
 	// Total items in cart
