@@ -1,18 +1,26 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-
-import { AppContext } from "../context/AppContext"; // Adjust the import path as necessary
+import { useAppContext } from "../context/AppContext";
 
 const Navbar = () => {
 	const [open, setOpen] = useState(false);
-
-	const { user, handleLogout } = useContext(AppContext); // Assuming AppContext provides user and handleLogout
+	const { user, isAdmin, handleLogout, navigate } = useAppContext();
 
 	const handleLogoutClick = () => {
-		// Replace with real logout logic
 		handleLogout();
-		setOpen(false); // Close the menu on logout
+		setOpen(false);
 	};
+
+	const handleProfileClick = () => {
+		if (isAdmin) {
+			navigate("/admin/store");
+		} else {
+			navigate("/shop/profile");
+		}
+		setOpen(false);
+	};
+
+	const username = user?.username || user?.name;
 
 	return (
 		<nav className='bg-white shadow sticky top-0 z-50'>
@@ -79,11 +87,16 @@ const Navbar = () => {
 					>
 						Contact Us
 					</Link>
-					{user && user.username ? (
+					{username ? (
 						<div className='flex items-center gap-2 ml-4'>
-							<span className='px-4 py-2 bg-blue-50 text-blue-700 rounded font-semibold'>
-								Welcome, {user.username}
-							</span>
+							<button
+								type='button'
+								onClick={handleProfileClick}
+								className='px-4 py-2 bg-blue-50 text-blue-700 rounded font-semibold hover:bg-blue-100 transition'
+								aria-label='Go to profile or admin dashboard'
+							>
+								Welcome, {username}
+							</button>
 							<button
 								onClick={handleLogoutClick}
 								className='px-3 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition font-medium'
@@ -133,16 +146,18 @@ const Navbar = () => {
 						>
 							Contact Us
 						</Link>
-						{user && user.username ? (
+						{username ? (
 							<div className='flex flex-col gap-2 mt-2'>
-								<span className='px-4 py-2 bg-blue-50 text-blue-700 rounded font-semibold'>
-									Welcome, {user.username}!
-								</span>
 								<button
-									onClick={() => {
-										handleLogoutClick();
-										setOpen(false);
-									}}
+									type='button'
+									onClick={handleProfileClick}
+									className='px-4 py-2 bg-blue-50 text-blue-700 rounded font-semibold hover:bg-blue-100 transition text-left'
+									aria-label='Go to profile or admin dashboard'
+								>
+									Welcome, {username}!
+								</button>
+								<button
+									onClick={handleLogoutClick}
 									className='px-3 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition font-medium'
 								>
 									Logout

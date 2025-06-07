@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { toast } from "react-toastify";
@@ -13,8 +13,7 @@ export const AppProvider = ({ children }) => {
 
 	const [token, setToken] = useState(null);
 	const [user, setUser] = useState(null);
-	const [isAdmin, setIsAdmin] = useState(false);
-
+	const isAdmin = useMemo(() => user?.role === "admin", [user]);
 	const navigate = useNavigate();
 
 	const API_URL = import.meta.env.VITE_API_URL;
@@ -172,11 +171,6 @@ export const AppProvider = ({ children }) => {
 
 		sessionStorage.setItem("token", userData.token);
 		sessionStorage.setItem("user", JSON.stringify(userData.user));
-		if (userData.user.role === "admin") {
-			setIsAdmin(true);
-		} else {
-			setIsAdmin(false);
-		}
 		toast("Logged in successfully!");
 	};
 
@@ -205,14 +199,6 @@ export const AppProvider = ({ children }) => {
 		}
 	}, []);
 
-	// Check if user is admin
-	useEffect(() => {
-		if (user && user.role === "admin") {
-			setIsAdmin(true);
-		} else {
-			setIsAdmin(false);
-		}
-	}, []);
 
 	const contextValue = {
 		loading,
