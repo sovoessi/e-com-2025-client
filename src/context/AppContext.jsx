@@ -13,6 +13,7 @@ export const AppProvider = ({ children }) => {
 
 	const [token, setToken] = useState(null);
 	const [user, setUser] = useState(null);
+	const [isAdmin, setIsAdmin] = useState(false);
 
 	const navigate = useNavigate();
 
@@ -212,6 +213,7 @@ export const AppProvider = ({ children }) => {
 		fetchUserProfile,
 		token,
 		user,
+		isAdmin,
 		navigate,
 		login,
 		register,

@@ -27,7 +27,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Terms from "./pages/Terms";
 
 function App() {
-	const { user } = useAppContext();
+	const { isAdmin } = useAppContext();
 
 	return (
 		<>
@@ -70,6 +70,11 @@ function App() {
 					path='/shop/login'
 					element={<Login />}
 				/>
+
+				<Route
+					path='/shop/register'
+					element={<Register />}
+				/>
 				<Route
 					path='/shop/place-order'
 					element={<PlaceOrder />}
@@ -84,11 +89,7 @@ function App() {
 				/>
 				<Route
 					path='/admin/store'
-					element={user ? <StoreDashboard /> : <Login />}
-				/>
-				<Route
-					path='/admin/register'
-					element={<Register />}
+					element={isAdmin ? <StoreDashboard /> : <Login />}
 				/>
 				<Route
 					path='/admin/store/add-product'
