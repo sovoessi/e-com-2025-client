@@ -12,7 +12,6 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Replace with real authentication logic
     if (!form.email || !form.password) {
       setError("Please fill in all fields.");
       return;
@@ -22,13 +21,13 @@ const Login = () => {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
-      <div className="max-w-md w-full bg-white p-8 rounded-xl shadow-lg border border-gray-100">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2 text-center">
-          Login
+    <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 py-12 px-4">
+      <div className="max-w-md w-full bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
+        <h1 className="text-3xl font-extrabold text-gray-900 mb-2 text-center">
+          Welcome Back
         </h1>
-        <p className="text-gray-500 text-sm mb-6 text-center">
-          Welcome back! Please sign in
+        <p className="text-gray-500 text-base mb-6 text-center">
+          Sign in to access your account and enjoy exclusive deals.
         </p>
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
@@ -72,19 +71,22 @@ const Login = () => {
           {error && <div className="text-red-500 text-sm">{error}</div>}
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white font-semibold py-2 rounded hover:bg-blue-700 transition"
+            className="w-full bg-blue-600 text-white font-semibold py-2 rounded hover:bg-blue-700 transition text-lg"
           >
             Sign In
           </button>
         </form>
         <div className="mt-6 text-center text-sm text-gray-500">
-          Don't have an account?{" "}
+          New to our shop?{" "}
           <Link
             to="/shop/register"
             className="text-blue-600 hover:underline font-medium"
           >
-            Register
+            Create your account
           </Link>
+        </div>
+        <div className="mt-4 text-center text-xs text-gray-400">
+          Secure login. Your privacy is our priority.
         </div>
       </div>
     </main>

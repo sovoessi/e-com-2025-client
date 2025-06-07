@@ -17,7 +17,6 @@ const Register = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Basic validation
     if (!form.name || !form.email || !form.password || !form.confirm) {
       setError("Please fill in all fields.");
       return;
@@ -31,13 +30,13 @@ const Register = () => {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
-      <div className="max-w-md w-full bg-white p-8 rounded-xl shadow-lg border border-gray-100">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2 text-center">
-          Create Admin Account
+    <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 py-12 px-4">
+      <div className="max-w-md w-full bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
+        <h1 className="text-3xl font-extrabold text-gray-900 mb-2 text-center">
+          Create Your Account
         </h1>
-        <p className="text-gray-500 text-sm mb-6 text-center">
-          Register to access your store dashboard and manage your business.
+        <p className="text-gray-500 text-base mb-6 text-center">
+          Join our community and unlock member-only offers!
         </p>
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
@@ -119,19 +118,22 @@ const Register = () => {
           {error && <div className="text-red-500 text-sm">{error}</div>}
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white font-semibold py-2 rounded hover:bg-blue-700 transition"
+            className="w-full bg-blue-600 text-white font-semibold py-2 rounded hover:bg-blue-700 transition text-lg"
           >
             Register
           </button>
         </form>
         <div className="mt-6 text-center text-sm text-gray-500">
-          Already have an account?{" "}
+          Already a member?{" "}
           <Link
-            to="/admin/store"
+            to="/shop/login"
             className="text-blue-600 hover:underline font-medium"
           >
-            Login
+            Sign in here
           </Link>
+        </div>
+        <div className="mt-4 text-center text-xs text-gray-400">
+          We respect your privacy. No spam, ever.
         </div>
       </div>
     </main>
