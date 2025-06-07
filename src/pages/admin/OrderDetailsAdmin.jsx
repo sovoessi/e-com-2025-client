@@ -41,7 +41,7 @@ const statusColors = {
 
 const statusOptions = ["Processing", "Shipped", "Delivered"];
 
-const OrderDetails = () => {
+const OrderDetailsAdmin = () => {
 	const { id } = useParams(); // <-- match param name from route: /admin/store/orders/:id
 	const navigate = useNavigate();
 	const [orders, setOrders] = useState(initialOrders);
@@ -157,4 +157,4 @@ const OrderDetails = () => {
 	);
 };
 
-export default OrderDetails;
+export default OrderDetailsAdmin;

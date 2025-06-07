@@ -35,7 +35,7 @@ const statusColors = {
 	Processing: "bg-yellow-100 text-yellow-700",
 };
 
-const Orders = () => {
+const OrdersAdmin = () => {
 	return (
 		<main className='bg-gray-50 min-h-screen py-10'>
 			<div className='max-w-4xl mx-auto px-4'>
@@ -89,4 +89,4 @@ const Orders = () => {
 	);
 };
 
-export default Orders;
+export default OrdersAdmin;
