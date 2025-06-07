@@ -1,9 +1,122 @@
-import React from 'react'
+import React from "react";
+import { Link } from "react-router-dom";
+
+const mockOrders = [
+  {
+    id: "1001",
+    date: "2025-06-01",
+    total: 129.97,
+    status: "Shipped",
+    items: [
+      { name: "Premium Hoodie", qty: 2, image: "/images/hoodie.jpg" },
+      { name: "Classic Sneakers", qty: 1, image: "/images/sneakers.jpg" },
+    ],
+  },
+  {
+    id: "1000",
+    date: "2025-05-20",
+    total: 49.99,
+    status: "Delivered",
+    items: [
+      { name: "Premium Hoodie", qty: 1, image: "/images/hoodie.jpg" },
+    ],
+  },
+];
+
+const statusColors = {
+  Shipped: "bg-blue-100 text-blue-700",
+  Delivered: "bg-green-100 text-green-700",
+  Processing: "bg-yellow-100 text-yellow-700",
+  Cancelled: "bg-red-100 text-red-700",
+};
 
 const OrdersUser = () => {
   return (
-    <div>OrdersUser</div>
-  )
-}
+    <main className="bg-gray-50 min-h-screen py-10">
+      <div className="max-w-4xl mx-auto px-4">
+        <h1 className="text-3xl font-extrabold mb-8 text-gray-900">
+          My Orders
+        </h1>
+        {mockOrders.length === 0 ? (
+          <div className="bg-white rounded-xl shadow p-8 text-center">
+            <p className="text-gray-500 mb-4">You have no orders yet.</p>
+            <Link
+              to="/shop"
+              className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition"
+            >
+              Start Shopping
+            </Link>
+          </div>
+        ) : (
+          <div className="bg-white rounded-xl shadow-lg p-6">
+            <table className="w-full text-left">
+              <thead>
+                <tr className="text-gray-500 text-sm border-b">
+                  <th className="py-2">Order #</th>
+                  <th>Date</th>
+                  <th>Status</th>
+                  <th>Total</th>
+                  <th>Items</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {mockOrders.map((order) => (
+                  <tr key={order.id} className="border-b last:border-0">
+                    <td className="py-3 font-bold text-blue-700">{order.id}</td>
+                    <td>{order.date}</td>
+                    <td>
+                      <span
+                        className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
+                          statusColors[order.status] ||
+                          "bg-gray-100 text-gray-700"
+                        }`}
+                      >
+                        {order.status}
+                      </span>
+                    </td>
+                    <td className="font-semibold">
+                      ${order.total.toFixed(2)}
+                    </td>
+                    <td>
+                      <div className="flex -space-x-2">
+                        {order.items.map((item, idx) => (
+                          <img
+                            key={idx}
+                            src={item.image}
+                            alt={item.name}
+                            className="w-8 h-8 rounded border bg-gray-100"
+                            title={item.name}
+                          />
+                        ))}
+                      </div>
+                    </td>
+                    <td>
+                      <Link
+                        to={`/shop/orders/${order.id}`}
+                        className="text-blue-600 hover:underline font-medium text-sm"
+                      >
+                        View Details
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div className="mt-6 text-xs text-gray-400 text-center">
+              Need help?{" "}
+              <a
+                href="/contact"
+                className="text-blue-600 hover:underline"
+              >
+                Contact support
+              </a>
+            </div>
+          </div>
+        )}
+      </div>
+    </main>
+  );
+};
 
-export default OrdersUser
+export default OrdersUser;

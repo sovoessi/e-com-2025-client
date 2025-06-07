@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 
-// Orders are hardcoded in Orders.jsx, so we need to match the param name and route
+// Demo data, replace with API call in production
 const initialOrders = [
 	{
 		id: "ORD-1001",
 		date: "2025-06-01",
 		status: "Delivered",
 		total: "$93",
+		customer: "Jane Doe",
 		address: "123 Main St, Springfield, USA",
 		items: [
 			{ name: "Men's Classic T-Shirt", qty: 1, price: "$29" },
@@ -20,7 +21,8 @@ const initialOrders = [
 		date: "2025-05-20",
 		status: "Shipped",
 		total: "$39",
-		address: "123 Main St, Springfield, USA",
+		customer: "John Smith",
+		address: "456 Oak Ave, Springfield, USA",
 		items: [{ name: "Women's Summer Sandals", qty: 1, price: "$39" }],
 	},
 	{
@@ -28,7 +30,8 @@ const initialOrders = [
 		date: "2025-05-10",
 		status: "Processing",
 		total: "$19",
-		address: "123 Main St, Springfield, USA",
+		customer: "Emily Clark",
+		address: "789 Pine Rd, Springfield, USA",
 		items: [{ name: "Kids' Fun Tote Bag", qty: 1, price: "$19" }],
 	},
 ];
@@ -54,6 +57,7 @@ const OrderDetailsAdmin = () => {
 		const updatedOrders = [...orders];
 		updatedOrders[orderIndex] = { ...order, status: newStatus };
 		setOrders(updatedOrders);
+		// In production, trigger API update here
 	};
 
 	if (!order) {
@@ -122,6 +126,12 @@ const OrderDetailsAdmin = () => {
 							Total: {order.total}
 						</span>
 					</div>
+					<div className='mb-4'>
+						<div className='font-semibold text-gray-800 mb-1'>
+							Customer
+						</div>
+						<div className='text-gray-700 text-sm'>{order.customer}</div>
+					</div>
 					{order.address && (
 						<div className='mb-6'>
 							<div className='font-semibold text-gray-800 mb-1'>
@@ -150,6 +160,15 @@ const OrderDetailsAdmin = () => {
 								</div>
 							))}
 						</div>
+					</div>
+					<div className='mt-8 text-xs text-gray-400 text-center'>
+						Need help?{" "}
+						<a
+							href='/contact'
+							className='text-blue-600 hover:underline'
+						>
+							Contact support
+						</a>
 					</div>
 				</div>
 			</div>
