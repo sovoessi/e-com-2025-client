@@ -10,7 +10,6 @@ export const AppContext = createContext();
 export const AppProvider = ({ children }) => {
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
-
 	const [token, setToken] = useState(null);
 	const [user, setUser] = useState(null);
 	const isAdmin = useMemo(() => user?.role === "admin", [user]);
@@ -41,7 +40,7 @@ export const AppProvider = ({ children }) => {
 			return response.data;
 		} catch (err) {
 			setError(err.message);
-			toast("Failed to fetch product details.");
+			toast.error("Failed to fetch product details.");
 			return null;
 		} finally {
 			setLoading(false);
@@ -65,7 +64,7 @@ export const AppProvider = ({ children }) => {
 			return response.data;
 		} catch (err) {
 			setError(err.message);
-			toast("Failed to update product.");
+			toast.error("Failed to update product.");
 			return null;
 		} finally {
 			setLoading(false);
@@ -84,7 +83,7 @@ export const AppProvider = ({ children }) => {
 			toast("Product deleted successfully!");
 		} catch (err) {
 			setError(err.message);
-			toast("Failed to delete product.");
+			toast.error("Failed to delete product.");
 		} finally {
 			setLoading(false);
 		}
@@ -103,7 +102,7 @@ export const AppProvider = ({ children }) => {
 			return response.data;
 		} catch (err) {
 			setError(err.message);
-			toast("Failed to create product.");
+			toast.error("Failed to create product.");
 			return null;
 		} finally {
 			setLoading(false);
@@ -123,7 +122,7 @@ export const AppProvider = ({ children }) => {
 			sessionStorage.setItem("user", JSON.stringify(response.data));
 		} catch (err) {
 			setError(err.message);
-			toast("Failed to fetch user profile.");
+			toast.error("Failed to fetch user profile.");
 		} finally {
 			setLoading(false);
 		}
@@ -168,7 +167,6 @@ export const AppProvider = ({ children }) => {
 	const handleLogin = (userData) => {
 		setToken(userData.token);
 		setUser(userData.user);
-
 		sessionStorage.setItem("token", userData.token);
 		sessionStorage.setItem("user", JSON.stringify(userData.user));
 		toast("Logged in successfully!");
@@ -187,38 +185,33 @@ export const AppProvider = ({ children }) => {
 	// Fetch token from session storage on initial load
 	useEffect(() => {
 		const storedToken = sessionStorage.getItem("token");
-		if (storedToken) {
-			setToken(storedToken);
-		}
-	}, []);
-	// Fetch user from session storage on initial load
-	useEffect(() => {
 		const storedUser = sessionStorage.getItem("user");
-		if (storedUser) {
-			setUser(JSON.parse(storedUser));
-		}
+		if (storedToken) setToken(storedToken);
+		if (storedUser) setUser(JSON.parse(storedUser));
 	}, []);
 
-
-	const contextValue = {
-		loading,
-		error,
-		toast,
-		fetchProducts,
-		fetchProductById,
-		updateProductById,
-		deleteProductById,
-		createProduct,
-		fetchUserProfile,
-		token,
-		user,
-		isAdmin,
-		navigate,
-		login,
-		register,
-		handleLogin,
-		handleLogout,
-	};
+	const contextValue = useMemo(
+		() => ({
+			loading,
+			error,
+			toast,
+			fetchProducts,
+			fetchProductById,
+			updateProductById,
+			deleteProductById,
+			createProduct,
+			fetchUserProfile,
+			token,
+			user,
+			isAdmin,
+			navigate,
+			login,
+			register,
+			handleLogin,
+			handleLogout,
+		}),
+		[loading, error, token, user, isAdmin, navigate]
+	);
 
 	return (
 		<AppContext.Provider value={contextValue}>{children}</AppContext.Provider>
