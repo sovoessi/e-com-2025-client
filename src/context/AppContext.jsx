@@ -47,28 +47,30 @@ export const AppProvider = ({ children }) => {
 		} finally {
 			setLoading(false);
 		}
-	}
+	};
 
 	// update product by ID
 	const updateProductById = async (id, productData) => {
 		setLoading(true);
 		try {
-			const response = await axios.put(`${API_URL}/products/${id}`, productData, {
-				headers: {	
-					Authorization: `Bearer ${token}`,
-				},
-			});
+			const response = await axios.put(
+				`${API_URL}/products/${id}`,
+				productData,
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				}
+			);
 			toast("Product updated successfully!");
 			return response.data;
-		}
-		catch (err) {
+		} catch (err) {
 			setError(err.message);
 			toast("Failed to update product.");
 			return null;
-		}
-		finally {
+		} finally {
 			setLoading(false);
-		}	
+		}
 	};
 
 	// delete product by ID
@@ -81,12 +83,10 @@ export const AppProvider = ({ children }) => {
 				},
 			});
 			toast("Product deleted successfully!");
-		}
-		catch (err) {
+		} catch (err) {
 			setError(err.message);
 			toast("Failed to delete product.");
-		}
-		finally {
+		} finally {
 			setLoading(false);
 		}
 	};
@@ -122,8 +122,7 @@ export const AppProvider = ({ children }) => {
 			});
 			setUser(response.data);
 			sessionStorage.setItem("user", JSON.stringify(response.data));
-		}
-		catch (err) {
+		} catch (err) {
 			setError(err.message);
 			toast("Failed to fetch user profile.");
 		} finally {
@@ -142,7 +141,7 @@ export const AppProvider = ({ children }) => {
 			handleLogin(response.data);
 		} catch (err) {
 			setError(err.message);
-			toast("Login failed. Please check your credentials.");
+			toast.error("Login failed. Please check your credentials.");
 		} finally {
 			setLoading(false);
 		}
@@ -170,15 +169,13 @@ export const AppProvider = ({ children }) => {
 	const handleLogin = (userData) => {
 		setToken(userData.token);
 		setUser(userData.user);
-		
+
 		sessionStorage.setItem("token", userData.token);
 		sessionStorage.setItem("user", JSON.stringify(userData.user));
 		if (userData.user.role === "admin") {
 			setIsAdmin(true);
-			navigate("/admin/store");
-		}else {
+		} else {
 			setIsAdmin(false);
-			navigate("/shop/profile");
 		}
 		toast("Logged in successfully!");
 	};
@@ -199,14 +196,14 @@ export const AppProvider = ({ children }) => {
 		if (storedToken) {
 			setToken(storedToken);
 		}
-	}, [token]);
+	}, []);
 	// Fetch user from session storage on initial load
 	useEffect(() => {
 		const storedUser = sessionStorage.getItem("user");
 		if (storedUser) {
 			setUser(JSON.parse(storedUser));
 		}
-	}, [user]);
+	}, []);
 
 	// Check if user is admin
 	useEffect(() => {
@@ -215,7 +212,7 @@ export const AppProvider = ({ children }) => {
 		} else {
 			setIsAdmin(false);
 		}
-	}, [user]);
+	}, []);
 
 	const contextValue = {
 		loading,

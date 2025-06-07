@@ -79,7 +79,7 @@ const Navbar = () => {
 					>
 						Contact Us
 					</Link>
-					{user && user.name ? (
+					{user && user.username ? (
 						<div className='flex items-center gap-2 ml-4'>
 							<span className='px-4 py-2 bg-blue-50 text-blue-700 rounded font-semibold'>
 								Welcome, {user.username}

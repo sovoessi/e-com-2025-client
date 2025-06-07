@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useAppContext } from "../../context/AppContext";
 
 const Login = () => {
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
+
+  const {navigate, login, toast} = useAppContext();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -16,8 +19,13 @@ const Login = () => {
       setError("Please fill in all fields.");
       return;
     }
+    login(form.email, form.password)
+      .catch((err) => {
+        setError(err.message || "Login failed. Please try again.");
+        toast.error("Login failed. Please try again.");
+      });
     // Simulate login success
-    alert("Login successful! (Replace with real logic)");
+    navigate("/shop");
   };
 
   return (
