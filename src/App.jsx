@@ -8,8 +8,10 @@ import Cart from "./pages/store/Cart";
 import AddProduct from "./pages/admin/AddProduct";
 import ListProducts from "./pages/admin/ListProducts";
 import EditProduct from "./pages/admin/EditProduct";
-import Orders from "./pages/admin/Orders";
-import OrderDetails from "./pages/admin/OrderDetails";
+import OrdersAdmin from "./pages/admin/OrdersAdmin";
+import OrderDetailsAdmin from "./pages/admin/OrderDetailsAdmin";
+import OrdersUser from "./pages/store/OrdersUser";
+import OrderDetailsUser from "./pages/store/OrderDetailsUser";
 import Login from "./pages/admin/Login";
 import Register from "./pages/admin/Register";
 import Navbar from "./components/Navbar";
@@ -65,12 +67,20 @@ function App() {
 					element={<Cart />}
 				/>
 				<Route
-					path='/login'
+					path='/shop/login'
 					element={<Login />}
 				/>
 				<Route
 					path='/shop/place-order'
 					element={<PlaceOrder />}
+				/>
+				<Route
+					path='/shop/orders'
+					element={<OrdersUser />}
+				/>
+				<Route
+					path='/shop/orders/:id'
+					element={<OrderDetailsUser />}
 				/>
 				<Route
 					path='/admin/store'
@@ -94,11 +104,11 @@ function App() {
 				/>
 				<Route
 					path='/admin/store/orders'
-					element={<Orders />}
+					element={<OrdersAdmin />}
 				/>
 				<Route
 					path='/admin/store/orders/:id'
-					element={<OrderDetails />}
+					element={<OrderDetailsAdmin />}
 				/>
 			</Routes>
 			<Footer />
