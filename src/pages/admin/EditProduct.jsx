@@ -63,7 +63,7 @@ const EditProduct = () => {
 			</Link>
 			<h2 className='text-2xl font-bold mb-4'>Edit Product</h2>
 			<form
-				onSubmit={handleSubmit} 
+				onSubmit={handleSubmit}
 				className='space-y-4'
 				encType='multipart/form-data'
 			>
@@ -88,6 +88,7 @@ const EditProduct = () => {
 					name='price'
 					type='number'
 					min='0'
+					step='0.01' // <-- allow decimals
 					placeholder='Price'
 					value={form.price}
 					onChange={handleChange}

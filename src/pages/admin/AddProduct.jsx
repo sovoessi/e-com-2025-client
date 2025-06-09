@@ -92,6 +92,7 @@ const AddProduct = () => {
 					name='price'
 					type='number'
 					min='0'
+					step={0.01} // <-- allow decimals
 					placeholder='Price'
 					value={form.price}
 					onChange={handleChange}
