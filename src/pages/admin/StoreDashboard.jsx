@@ -146,7 +146,7 @@ const StoreDashboard = () => {
 								List Products
 							</Link>
 							<Link
-								to='/admin/store/add-products'
+								to='/admin/store/add-product'
 								className='inline-block px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition'
 							>
 								Add New Product

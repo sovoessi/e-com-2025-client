@@ -63,7 +63,7 @@ const EditProduct = () => {
 			</Link>
 			<h2 className='text-2xl font-bold mb-4'>Edit Product</h2>
 			<form
-				onSubmit={handleSubmit}
+				onSubmit={handleSubmit} 
 				className='space-y-4'
 				encType='multipart/form-data'
 			>
