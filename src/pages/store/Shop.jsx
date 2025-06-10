@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useAppContext } from "../../context/AppContext";
 import ShopProductCard from "./ShopProductCard";
+import { NavLink } from "react-router-dom";
 
 const categories = [
 	{ label: "All", value: "all" },
@@ -11,8 +12,6 @@ const categories = [
 	{ label: "Toys", value: "toys" },
 	{ label: "Sports", value: "sports" },
 ];
-
-// "all","electronics", "clothing", "home", "books", "toys", "sports"
 
 const genders = [
 	{ label: "All", value: "all" },
@@ -31,7 +30,10 @@ const Shop = () => {
 	const [selectedGender, setSelectedGender] = useState("all");
 	const [search, setSearch] = useState("");
 	const [sortBy, setSortBy] = useState("default");
-	const [cart, setCart] = useState(() => new Map());
+	const [cart, setCart] = useState(() => {
+		const stored = localStorage.getItem("cart");
+		return stored ? JSON.parse(stored) : [];
+	});
 	const [profileMenuOpen, setProfileMenuOpen] = useState(false);
 
 	const [products, setProducts, user] = useState([]);
@@ -64,19 +66,32 @@ const Shop = () => {
 		return () => document.removeEventListener("mousedown", handleClick);
 	}, [profileMenuOpen]);
 
+	// Sync cart to localStorage whenever it changes
+	useEffect(() => {
+		localStorage.setItem("cart", JSON.stringify(cart));
+	}, [cart]);
+
 	// Add to cart handler
-	const addToCart = (productId) => {
+	const addToCart = (product) => {
 		setCart((prevCart) => {
-			const newCart = new Map(prevCart);
-			newCart.set(productId, (newCart.get(productId) || 0) + 1);
-			return newCart;
+			const existing = prevCart.find(
+				(item) => item.id === product.id && item.size === product.size
+			);
+			if (existing) {
+				return prevCart.map((item) =>
+					item.id === product.id && item.size === product.size
+						? { ...item, quantity: item.quantity + 1 }
+						: item
+				);
+			}
+			return [...prevCart, { ...product, quantity: 1 }];
 		});
 	};
 
 	const handleLogoutClick = () => {
 		// Handle logout logic here
 		console.log("User logged out");
-		setProfileMenuOpen(false)
+		setProfileMenuOpen(false);
 		handleLogout();
 	};
 
@@ -242,70 +257,71 @@ const Shop = () => {
 											strokeWidth='2'
 										/>
 									</svg>
-									{/* Notification Badge */}
+									{/* TODO: Notification Badge 
 									<span className='absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full px-1.5 py-0.5 min-w-5 text-center'>
 										3
 									</span>
+									*/}
 								</button>
-								{user ? (
-								profileMenuOpen && (
-									<div className='absolute right-0 top-full mt-2 min-w-full w-48 bg-white rounded-lg shadow-lg z-10'>
-										<ul className='flex flex-col gap-2 py-3 px-5 bg-slate-100 text-gray-500 rounded shadow-lg'>
-											<li>
-												<a
-													href='/shop/profile'
-													className='cursor-pointer block px-4 py-2 text-gray-700 hover:bg-blue-50'
-													aria-label='Profile'
-												>
-													Profile
-												</a>
-											</li>
-											<li>
-												<a
-													href='/shop/orders'
-													className='cursor-pointer block px-4 py-2 text-gray-700 hover:bg-blue-50'
-													aria-label='Orders'
-												>
-													Orders
-												</a>
-											</li>
-											<li>
-												<a
-												onClick={handleLogoutClick}
-													href='/shop'
-													className='cursor-pointer block px-4 py-2 text-gray-700 hover:bg-blue-50'
-													aria-label='Logout'
-												>
-													Logout
-												</a>
-											</li>
-										</ul>
-									</div>
-								)) : (
-									profileMenuOpen && (
-									<div className='absolute right-0 top-full mt-2 min-w-full w-48 bg-white rounded-lg shadow-lg z-10'>
-										<ul className='flex flex-col gap-2 py-3 px-5 bg-slate-100 text-gray-500 rounded shadow-lg'>
-											<li>
-												<a
-													href='/shop/login'
-													className='cursor-pointer block px-4 py-2 text-gray-700 hover:bg-blue-50'
-													aria-label='Login'
-												>
-													Login
-												</a>
-											</li>
-											<li>
-												<a
-													href='/shop/register'
-													className='cursor-pointer block px-4 py-2 text-gray-700 hover:bg-blue-50'
-													aria-label='Register'
-												>
-													Register
-												</a>
-											</li>
-										</ul>
-									</div>
-								))}
+								{user
+									? profileMenuOpen && (
+											<div className='absolute right-0 top-full mt-2 min-w-full w-48 bg-white rounded-lg shadow-lg z-10'>
+												<ul className='flex flex-col gap-2 py-3 px-5 bg-slate-100 text-gray-500 rounded shadow-lg'>
+													<li>
+														<NavLink
+															to='/shop/profile'
+															className='cursor-pointer block px-4 py-2 text-gray-700 hover:bg-blue-50'
+															aria-label='Profile'
+														>
+															Profile
+														</NavLink>
+													</li>
+													<li>
+														<NavLink
+															to='/shop/orders'
+															className='cursor-pointer block px-4 py-2 text-gray-700 hover:bg-blue-50'
+															aria-label='Orders'
+														>
+															Orders
+														</NavLink>
+													</li>
+													<li>
+														<NavLink
+															onClick={handleLogoutClick}
+															to='/shop'
+															className='cursor-pointer block px-4 py-2 text-gray-700 hover:bg-blue-50'
+															aria-label='Logout'
+														>
+															Logout
+														</NavLink>
+													</li>
+												</ul>
+											</div>
+									  )
+									: profileMenuOpen && (
+											<div className='absolute right-0 top-full mt-2 min-w-full w-48 bg-white rounded-lg shadow-lg z-10'>
+												<ul className='flex flex-col gap-2 py-3 px-5 bg-slate-100 text-gray-500 rounded shadow-lg'>
+													<li>
+														<NavLink
+															to='/shop/login'
+															className='cursor-pointer block px-4 py-2 text-gray-700 hover:bg-blue-50'
+															aria-label='Login'
+														>
+															Login
+														</NavLink>
+													</li>
+													<li>
+														<NavLink
+															href='/shop/register'
+															className='cursor-pointer block px-4 py-2 text-gray-700 hover:bg-blue-50'
+															aria-label='Register'
+														>
+															Register
+														</NavLink>
+													</li>
+												</ul>
+											</div>
+									  )}
 							</div>
 						</div>
 					</div>
@@ -401,7 +417,12 @@ const Shop = () => {
 									>
 										<ShopProductCard
 											product={product}
-											addToCart={addToCart}
+											addToCart={() =>
+												addToCart({
+													...product,
+													size: product.sizes?.[0] || "M",
+												})
+											}
 										/>
 									</div>
 								))
