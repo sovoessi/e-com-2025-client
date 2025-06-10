@@ -163,6 +163,26 @@ export const AppProvider = ({ children }) => {
 		}
 	};
 
+	const handlePlaceOrder = async (orderData) => {
+		setLoading(true);
+		try {
+			const response = await axios.post(`${API_URL}/orders`, orderData, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+			toast("Order placed successfully!");
+			navigate("/orders");
+			return response.data;
+		} catch (err) {
+			setError(err.message);
+			toast.error("Failed to place order.");
+			return null;
+		} finally {
+			setLoading(false);
+		}
+	}
+
 	// Handle user login
 	const handleLogin = (userData) => {
 		setToken(userData.token);
@@ -201,6 +221,7 @@ export const AppProvider = ({ children }) => {
 			deleteProductById,
 			createProduct,
 			fetchUserProfile,
+			handlePlaceOrder,
 			token,
 			user,
 			isAdmin,

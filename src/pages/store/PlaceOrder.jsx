@@ -1,41 +1,54 @@
 import { useState, useEffect } from "react";
-
+import { useAppContext } from "../../context/AppContext";
 
 const freeShippingThreshold = 150;
 
 const CardTotal = ({ cart }) => {
-  const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const shipping = subtotal >= freeShippingThreshold ? 0 : 9.99;
-  const total = subtotal + shipping;
+	const subtotal = cart.reduce(
+		(sum, item) => sum + item.price * item.quantity,
+		0
+	);
+	const shipping = subtotal >= freeShippingThreshold ? 0 : 9.99;
+	const total = subtotal + shipping;
+	// Access toast and handlePlaceOrder from context
+	const { toast } = useAppContext();
 
-  return (
-    <div className="bg-white rounded-xl shadow p-6 mb-6">
-      <h3 className="text-lg font-bold mb-4 text-gray-900">Order Summary</h3>
-      <div className="flex justify-between mb-2 text-gray-700">
-        <span>Subtotal</span>
-        <span>${subtotal.toFixed(2)}</span>
-      </div>
-      <div className="flex justify-between mb-2 text-gray-700">
-        <span>Shipping</span>
-        <span>
-          {shipping === 0 ? (
-            <span className="text-green-600 font-semibold">Free</span>
-          ) : (
-            `$${shipping.toFixed(2)}`
-          )}
-        </span>
-      </div>
-      <div className="flex justify-between font-bold text-lg mt-4">
-        <span>Total</span>
-        <span>${total.toFixed(2)}</span>
-      </div>
-      <div className="mt-2 text-xs text-blue-600">
-        {subtotal >= freeShippingThreshold
-          ? "You qualify for free shipping!"
-          : `Add $${(freeShippingThreshold - subtotal).toFixed(2)} for free shipping`}
-      </div>
-    </div>
-  );
+	useEffect(() => {
+		if (subtotal >= freeShippingThreshold) {
+			toast("You qualify for free shipping!");
+		}
+	}, [subtotal, toast]);
+
+	return (
+		<div className='bg-white rounded-xl shadow p-6 mb-6'>
+			<h3 className='text-lg font-bold mb-4 text-gray-900'>Order Summary</h3>
+			<div className='flex justify-between mb-2 text-gray-700'>
+				<span>Subtotal</span>
+				<span>${subtotal.toFixed(2)}</span>
+			</div>
+			<div className='flex justify-between mb-2 text-gray-700'>
+				<span>Shipping</span>
+				<span>
+					{shipping === 0 ? (
+						<span className='text-green-600 font-semibold'>Free</span>
+					) : (
+						`$${shipping.toFixed(2)}`
+					)}
+				</span>
+			</div>
+			<div className='flex justify-between font-bold text-lg mt-4'>
+				<span>Total</span>
+				<span>${total.toFixed(2)}</span>
+			</div>
+			<div className='mt-2 text-xs text-blue-600'>
+				{subtotal >= freeShippingThreshold
+					? "You qualify for free shipping!"
+					: `Add $${(freeShippingThreshold - subtotal).toFixed(
+							2
+					  )} for free shipping`}
+			</div>
+		</div>
+	);
 };
 
 const PlaceOrder = () => {
@@ -49,6 +62,9 @@ const PlaceOrder = () => {
 		email: "",
 	});
 	const [payment, setPayment] = useState("stripe");
+
+	const { toast, handlePlaceOrder } = useAppContext();
+
 	// Replace mockCart with cart from localStorage
 	const [cart, setCart] = useState(() => {
 		const stored = localStorage.getItem("cart");
@@ -73,9 +89,34 @@ const PlaceOrder = () => {
 		setPayment(e.target.value);
 	};
 
-	const handlePlaceOrder = (e) => {
+	const handlePlaceOrderClick = (e) => {
 		e.preventDefault();
 		// ...order logic...
+		if (cart.length === 0) {
+			toast("Your cart is empty. Please add items before placing an order.");
+			return;
+		}
+		const orderData = {
+			delivery,
+			paymentMethod: payment,
+			products: cart.map((item) => ({
+				productId: item.id,
+				quantity: item.quantity,
+				price: item.price,
+			})),
+			totalAmount: cart.reduce(
+				(sum, item) => sum + item.price * item.quantity,
+				0
+			),
+		};
+		handlePlaceOrder(orderData)
+			.then(() => {
+				toast("Order placed successfully!");
+			})
+			.catch((error) => {
+				toast.error("Failed to place order: " + error.message);
+			});
+		// Clear localStorage cart and reset state
 		localStorage.removeItem("cart"); // Clear cart after order
 		setCart([]);
 	};
@@ -90,7 +131,7 @@ const PlaceOrder = () => {
 					</h2>
 					<form
 						className='space-y-5'
-						onSubmit={handlePlaceOrder}
+						onSubmit={handlePlaceOrderClick}
 						autoComplete='off'
 					>
 						<div>
