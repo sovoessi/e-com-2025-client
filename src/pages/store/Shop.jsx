@@ -1,20 +1,24 @@
-import { useState, useEffect, useRef, use } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAppContext } from "../../context/AppContext";
 import ShopProductCard from "./ShopProductCard";
 
 const categories = [
 	{ label: "All", value: "all" },
+	{ label: "Electronics", value: "electronics" },
 	{ label: "Clothing", value: "clothing" },
-	{ label: "Mugs", value: "mugs" },
-	{ label: "Tote Bags", value: "tote-bags" },
-	{ label: "Sandals", value: "sandals" },
-	{ label: "Accessories", value: "accessories" },
+	{ label: "Home", value: "home" },
+	{ label: "books", value: "books" },
+	{ label: "Toys", value: "toys" },
+	{ label: "Sports", value: "sports" },
 ];
+
+// "all","electronics", "clothing", "home", "books", "toys", "sports"
 
 const genders = [
 	{ label: "All", value: "all" },
 	{ label: "Men", value: "men" },
 	{ label: "Women", value: "women" },
+	{ label: "Unisex", value: "unisex" },
 	{ label: "Kids", value: "kids" },
 ];
 
@@ -30,9 +34,9 @@ const Shop = () => {
 	const [cart, setCart] = useState(() => new Map());
 	const [profileMenuOpen, setProfileMenuOpen] = useState(false);
 
-	const [products, setProducts] = useState([]);
+	const [products, setProducts, user] = useState([]);
 
-	const { navigate, fetchProducts } = useAppContext();
+	const { navigate, fetchProducts, handleLogout } = useAppContext();
 
 	useEffect(() => {
 		// Fetch products from API or context
@@ -67,6 +71,13 @@ const Shop = () => {
 			newCart.set(productId, (newCart.get(productId) || 0) + 1);
 			return newCart;
 		});
+	};
+
+	const handleLogoutClick = () => {
+		// Handle logout logic here
+		console.log("User logged out");
+		setProfileMenuOpen(false)
+		handleLogout();
 	};
 
 	// Handle cart click (could open a modal or redirect to cart page)
@@ -236,12 +247,13 @@ const Shop = () => {
 										3
 									</span>
 								</button>
-								{profileMenuOpen && (
+								{user ? (
+								profileMenuOpen && (
 									<div className='absolute right-0 top-full mt-2 min-w-full w-48 bg-white rounded-lg shadow-lg z-10'>
 										<ul className='flex flex-col gap-2 py-3 px-5 bg-slate-100 text-gray-500 rounded shadow-lg'>
 											<li>
 												<a
-													href='/profile'
+													href='/shop/profile'
 													className='cursor-pointer block px-4 py-2 text-gray-700 hover:bg-blue-50'
 													aria-label='Profile'
 												>
@@ -250,7 +262,7 @@ const Shop = () => {
 											</li>
 											<li>
 												<a
-													href='/orders'
+													href='/shop/orders'
 													className='cursor-pointer block px-4 py-2 text-gray-700 hover:bg-blue-50'
 													aria-label='Orders'
 												>
@@ -259,7 +271,8 @@ const Shop = () => {
 											</li>
 											<li>
 												<a
-													href='/logout'
+												onClick={handleLogoutClick}
+													href='/shop'
 													className='cursor-pointer block px-4 py-2 text-gray-700 hover:bg-blue-50'
 													aria-label='Logout'
 												>
@@ -268,7 +281,31 @@ const Shop = () => {
 											</li>
 										</ul>
 									</div>
-								)}
+								)) : (
+									profileMenuOpen && (
+									<div className='absolute right-0 top-full mt-2 min-w-full w-48 bg-white rounded-lg shadow-lg z-10'>
+										<ul className='flex flex-col gap-2 py-3 px-5 bg-slate-100 text-gray-500 rounded shadow-lg'>
+											<li>
+												<a
+													href='/shop/login'
+													className='cursor-pointer block px-4 py-2 text-gray-700 hover:bg-blue-50'
+													aria-label='Login'
+												>
+													Login
+												</a>
+											</li>
+											<li>
+												<a
+													href='/shop/register'
+													className='cursor-pointer block px-4 py-2 text-gray-700 hover:bg-blue-50'
+													aria-label='Register'
+												>
+													Register
+												</a>
+											</li>
+										</ul>
+									</div>
+								))}
 							</div>
 						</div>
 					</div>
