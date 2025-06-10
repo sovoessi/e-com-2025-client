@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, use } from "react";
 import { useAppContext } from "../../context/AppContext";
 import ShopProductCard from "./ShopProductCard";
 
@@ -18,97 +18,6 @@ const genders = [
 	{ label: "Kids", value: "kids" },
 ];
 
-const products = [
-	{
-		id: 1,
-		name: "Men's Classic T-Shirt",
-		price: "$29",
-		image:
-			"https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80",
-		category: "clothing",
-		gender: "men",
-		reviews: 120,
-		rating: 4.2, // Add this
-	},
-	{
-		id: 2,
-		name: "Women's Summer Sandals",
-		price: "$39",
-		image:
-			"https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80",
-		category: "sandals",
-		gender: "women",
-		reviews: 98,
-		rating: 4.5, // Add this
-	},
-	{
-		id: 3,
-		name: "Kids' Fun Tote Bag",
-		price: "$19",
-		image:
-			"https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80",
-		category: "tote-bags",
-		gender: "kids",
-		reviews: 45,
-		rating: 4.0, // Add this
-	},
-	{
-		id: 4,
-		name: "Ceramic Coffee Mug",
-		price: "$15",
-		image:
-			"https://images.unsplash.com/photo-1517685352821-92cf88aee5a5?auto=format&fit=crop&w=400&q=80",
-		category: "mugs",
-		gender: "all",
-		reviews: 210,
-		rating: 4.8, // Add this
-	},
-	{
-		id: 5,
-		name: "Women's Canvas Tote",
-		price: "$25",
-		image:
-			"https://images.unsplash.com/photo-1465101178521-c1a9136a3b99?auto=format&fit=crop&w=400&q=80",
-		category: "tote-bags",
-		gender: "women",
-		reviews: 67,
-		rating: 4.3, // Add this
-	},
-	{
-		id: 6,
-		name: "Men's Leather Sandals",
-		price: "$45",
-		image:
-			"https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80",
-		category: "sandals",
-		gender: "men",
-		reviews: 80,
-		rating: 4.6, // Add this
-	},
-	{
-		id: 7,
-		name: "Kids' Cartoon Mug",
-		price: "$12",
-		image:
-			"https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80",
-		category: "mugs",
-		gender: "kids",
-		reviews: 34,
-		rating: 2.1, // Add this
-	},
-	{
-		id: 8,
-		name: "Unisex Baseball Cap",
-		price: "$22",
-		image:
-			"https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80",
-		category: "accessories",
-		gender: "all",
-		reviews: 150,
-		rating: 1.1, // Add this
-	},
-];
-
 function parsePrice(priceStr) {
 	return Number(priceStr.replace(/[^0-9.]/g, ""));
 }
@@ -121,7 +30,18 @@ const Shop = () => {
 	const [cart, setCart] = useState(() => new Map());
 	const [profileMenuOpen, setProfileMenuOpen] = useState(false);
 
-	const { navigate } = useAppContext();
+	const [products, setProducts] = useState([]);
+
+	const { navigate, fetchProducts } = useAppContext();
+
+	useEffect(() => {
+		// Fetch products from API or context
+		const loadProducts = async () => {
+			const fetchedProducts = await fetchProducts();
+			setProducts(fetchedProducts);
+		};
+		loadProducts();
+	}, [fetchProducts]);
 
 	// Optional: Close dropdown when clicking outside
 	const profileMenuRef = useRef(null);

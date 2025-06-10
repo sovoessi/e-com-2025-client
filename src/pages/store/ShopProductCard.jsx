@@ -5,7 +5,7 @@ const ShopProductCard = ({ product, addToCart }) => (
 	<div className='flex flex-col items-center text-center h-full'>
 		<div className='w-full aspect-[4/3] mb-4 flex items-center justify-center overflow-hidden rounded-lg bg-gray-100'>
 			<img
-				src={product.image}
+				src={product.images[0]}
 				alt={product.name}
 				className='w-full h-full object-cover object-center'
 				loading='lazy'
