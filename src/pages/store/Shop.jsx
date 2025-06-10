@@ -104,7 +104,7 @@ const Shop = () => {
 	};
 
 	// Total items in cart
-	const cartCount = Array.from(cart.values()).reduce((a, b) => a + b, 0);
+	const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
 
 	const filteredProducts = products
 		.filter((product) => {
