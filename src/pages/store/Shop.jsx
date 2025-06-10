@@ -36,9 +36,9 @@ const Shop = () => {
 	});
 	const [profileMenuOpen, setProfileMenuOpen] = useState(false);
 
-	const [products, setProducts, user] = useState([]);
+	const [products, setProducts] = useState([]);
 
-	const { navigate, fetchProducts, handleLogout } = useAppContext();
+	const { navigate, fetchProducts, handleLogout, user } = useAppContext();
 
 	useEffect(() => {
 		// Fetch products from API or context
