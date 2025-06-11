@@ -1,102 +1,24 @@
-import{ useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useAppContext } from "../../context/AppContext";
+import ShopProductCard from "./ShopProductCard";
+import { NavLink } from "react-router-dom";
 
 const categories = [
 	{ label: "All", value: "all" },
+	{ label: "Electronics", value: "electronics" },
 	{ label: "Clothing", value: "clothing" },
-	{ label: "Mugs", value: "mugs" },
-	{ label: "Tote Bags", value: "tote-bags" },
-	{ label: "Sandals", value: "sandals" },
-	{ label: "Accessories", value: "accessories" },
+	{ label: "Home", value: "home" },
+	{ label: "books", value: "books" },
+	{ label: "Toys", value: "toys" },
+	{ label: "Sports", value: "sports" },
 ];
 
 const genders = [
 	{ label: "All", value: "all" },
 	{ label: "Men", value: "men" },
 	{ label: "Women", value: "women" },
+	{ label: "Unisex", value: "unisex" },
 	{ label: "Kids", value: "kids" },
-];
-
-const products = [
-	{
-		id: 1,
-		name: "Men's Classic T-Shirt",
-		price: "$29",
-		image:
-			"https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80",
-		category: "clothing",
-		gender: "men",
-		reviews: 120,
-	},
-	{
-		id: 2,
-		name: "Women's Summer Sandals",
-		price: "$39",
-		image:
-			"https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80",
-		category: "sandals",
-		gender: "women",
-		reviews: 98,
-	},
-	{
-		id: 3,
-		name: "Kids' Fun Tote Bag",
-		price: "$19",
-		image:
-			"https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80",
-		category: "tote-bags",
-		gender: "kids",
-		reviews: 45,
-	},
-	{
-		id: 4,
-		name: "Ceramic Coffee Mug",
-		price: "$15",
-		image:
-			"https://images.unsplash.com/photo-1517685352821-92cf88aee5a5?auto=format&fit=crop&w=400&q=80",
-		category: "mugs",
-		gender: "all",
-		reviews: 210,
-	},
-	{
-		id: 5,
-		name: "Women's Canvas Tote",
-		price: "$25",
-		image:
-			"https://images.unsplash.com/photo-1465101178521-c1a9136a3b99?auto=format&fit=crop&w=400&q=80",
-		category: "tote-bags",
-		gender: "women",
-		reviews: 67,
-	},
-	{
-		id: 6,
-		name: "Men's Leather Sandals",
-		price: "$45",
-		image:
-			"https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80",
-		category: "sandals",
-		gender: "men",
-		reviews: 80,
-	},
-	{
-		id: 7,
-		name: "Kids' Cartoon Mug",
-		price: "$12",
-		image:
-			"https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80",
-		category: "mugs",
-		gender: "kids",
-		reviews: 34,
-	},
-	{
-		id: 8,
-		name: "Unisex Baseball Cap",
-		price: "$22",
-		image:
-			"https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80",
-		category: "accessories",
-		gender: "all",
-		reviews: 150,
-	},
 ];
 
 function parsePrice(priceStr) {
@@ -108,8 +30,24 @@ const Shop = () => {
 	const [selectedGender, setSelectedGender] = useState("all");
 	const [search, setSearch] = useState("");
 	const [sortBy, setSortBy] = useState("default");
-	const [cart, setCart] = useState(() => new Map());
+	const [cart, setCart] = useState(() => {
+		const stored = localStorage.getItem("cart");
+		return stored ? JSON.parse(stored) : [];
+	});
 	const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+
+	const [products, setProducts] = useState([]);
+
+	const { navigate, fetchProducts, handleLogout, user } = useAppContext();
+
+	useEffect(() => {
+		// Fetch products from API or context
+		const loadProducts = async () => {
+			const fetchedProducts = await fetchProducts();
+			setProducts(fetchedProducts);
+		};
+		loadProducts();
+	}, [fetchProducts]);
 
 	// Optional: Close dropdown when clicking outside
 	const profileMenuRef = useRef(null);
@@ -128,17 +66,45 @@ const Shop = () => {
 		return () => document.removeEventListener("mousedown", handleClick);
 	}, [profileMenuOpen]);
 
+	// Sync cart to localStorage whenever it changes
+	useEffect(() => {
+		localStorage.setItem("cart", JSON.stringify(cart));
+	}, [cart]);
+
 	// Add to cart handler
-	const addToCart = (productId) => {
+	const addToCart = (product) => {
 		setCart((prevCart) => {
-			const newCart = new Map(prevCart);
-			newCart.set(productId, (newCart.get(productId) || 0) + 1);
-			return newCart;
+			const existing = prevCart.find(
+				(item) => item.id === product.id && item.size === product.size
+			);
+			if (existing) {
+				return prevCart.map((item) =>
+					item.id === product.id && item.size === product.size
+						? { ...item, quantity: item.quantity + 1 }
+						: item
+				);
+			}
+			return [...prevCart, { ...product, quantity: 1 }];
 		});
 	};
 
+	const handleLogoutClick = () => {
+		// Handle logout logic here
+		console.log("User logged out");
+		setProfileMenuOpen(false);
+		handleLogout();
+	};
+
+	// Handle cart click (could open a modal or redirect to cart page)
+	const handleCartClick = () => {
+		// For now, just log the cart contents
+		console.log("Cart contents:", Array.from(cart.entries()));
+		// You can implement cart modal or redirect logic here
+		navigate("/shop/cart");
+	};
+
 	// Total items in cart
-	const cartCount = Array.from(cart.values()).reduce((a, b) => a + b, 0);
+	const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
 
 	const filteredProducts = products
 		.filter((product) => {
@@ -213,6 +179,7 @@ const Shop = () => {
 						</div>
 						<div className='flex items-center gap-2 justify-end'>
 							<button
+								onClick={handleCartClick}
 								type='button'
 								className='relative p-2 rounded-full hover:bg-blue-50 transition'
 								aria-label='Basket'
@@ -290,45 +257,71 @@ const Shop = () => {
 											strokeWidth='2'
 										/>
 									</svg>
-									{/* Notification Badge */}
+									{/* TODO: Notification Badge 
 									<span className='absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full px-1.5 py-0.5 min-w-5 text-center'>
 										3
 									</span>
-									
+									*/}
 								</button>
-								{profileMenuOpen && (
-									<div className='absolute right-0 top-full mt-2 min-w-full w-48 bg-white rounded-lg shadow-lg z-10'>
-										<ul className='flex flex-col gap-2 py-3 px-5 bg-slate-100 text-gray-500 rounded shadow-lg'>
-											<li>
-												<a
-													href='/profile'
-													className='cursor-pointer block px-4 py-2 text-gray-700 hover:bg-blue-50'
-													aria-label='Profile'
-												>
-													Profile
-												</a>
-											</li>
-											<li>
-												<a
-													href='/orders'
-													className='cursor-pointer block px-4 py-2 text-gray-700 hover:bg-blue-50'
-													aria-label='Orders'
-												>
-													Orders
-												</a>
-											</li>
-											<li>
-												<a
-													href='/logout'
-													className='cursor-pointer block px-4 py-2 text-gray-700 hover:bg-blue-50'
-													aria-label='Logout'
-												>
-													Logout
-												</a>
-											</li>
-										</ul>
-									</div>
-								)}
+								{user
+									? profileMenuOpen && (
+											<div className='absolute right-0 top-full mt-2 min-w-full w-48 bg-white rounded-lg shadow-lg z-10'>
+												<ul className='flex flex-col gap-2 py-3 px-5 bg-slate-100 text-gray-500 rounded shadow-lg'>
+													<li>
+														<NavLink
+															to='/shop/profile'
+															className='cursor-pointer block px-4 py-2 text-gray-700 hover:bg-blue-50'
+															aria-label='Profile'
+														>
+															Profile
+														</NavLink>
+													</li>
+													<li>
+														<NavLink
+															to='/shop/orders'
+															className='cursor-pointer block px-4 py-2 text-gray-700 hover:bg-blue-50'
+															aria-label='Orders'
+														>
+															Orders
+														</NavLink>
+													</li>
+													<li>
+														<NavLink
+															onClick={handleLogoutClick}
+															to='/shop'
+															className='cursor-pointer block px-4 py-2 text-gray-700 hover:bg-blue-50'
+															aria-label='Logout'
+														>
+															Logout
+														</NavLink>
+													</li>
+												</ul>
+											</div>
+									  )
+									: profileMenuOpen && (
+											<div className='absolute right-0 top-full mt-2 min-w-full w-48 bg-white rounded-lg shadow-lg z-10'>
+												<ul className='flex flex-col gap-2 py-3 px-5 bg-slate-100 text-gray-500 rounded shadow-lg'>
+													<li>
+														<NavLink
+															to='/shop/login'
+															className='cursor-pointer block px-4 py-2 text-gray-700 hover:bg-blue-50'
+															aria-label='Login'
+														>
+															Login
+														</NavLink>
+													</li>
+													<li>
+														<NavLink
+															href='/shop/register'
+															className='cursor-pointer block px-4 py-2 text-gray-700 hover:bg-blue-50'
+															aria-label='Register'
+														>
+															Register
+														</NavLink>
+													</li>
+												</ul>
+											</div>
+									  )}
 							</div>
 						</div>
 					</div>
@@ -422,30 +415,15 @@ const Shop = () => {
 										key={product.id}
 										className='bg-white rounded-xl shadow hover:shadow-xl transition p-6 flex flex-col items-center'
 									>
-										<div className='w-full aspect-[4/3] mb-4 flex items-center justify-center overflow-hidden rounded-lg bg-gray-100'>
-											<img
-												src={product.image}
-												alt={product.name}
-												className='w-full h-full object-cover object-center'
-												loading='lazy'
-											/>
-										</div>
-										<h3 className='text-base font-semibold text-gray-800 mb-1 text-center w-full truncate'>
-											{product.name}
-										</h3>
-										<span className='text-blue-600 font-bold text-lg mb-1'>
-											{product.price}
-										</span>
-										<span className='text-gray-500 text-xs mb-3'>
-											{product.reviews ?? 0} reviews
-										</span>
-										<button
-											className='w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-medium mt-auto'
-											onClick={() => addToCart(product.id)}
-											aria-label={`Add ${product.name} to cart`}
-										>
-											Add to Cart
-										</button>
+										<ShopProductCard
+											product={product}
+											addToCart={() =>
+												addToCart({
+													...product,
+													size: product.sizes?.[0] || "M",
+												})
+											}
+										/>
 									</div>
 								))
 							)}

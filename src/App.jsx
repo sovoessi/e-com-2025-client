@@ -1,29 +1,40 @@
 import { useAppContext } from "./context/AppContext";
 import { Routes, Route } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+
 import Home from "./pages/Home";
+import ContactUs from "./pages/ContactUs";
+import AboutUs from "./pages/AboutUs";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import Terms from "./pages/Terms";
+
 import StoreDashboard from "./pages/admin/StoreDashboard";
-import ProductPage from "./pages/store/ProductPage";
-import Shop from "./pages/store/Shop";
-import Cart from "./pages/store/Cart";
 import AddProduct from "./pages/admin/AddProduct";
 import ListProducts from "./pages/admin/ListProducts";
 import EditProduct from "./pages/admin/EditProduct";
-import Orders from "./pages/admin/Orders";
-import OrderDetails from "./pages/admin/OrderDetails";
+import OrdersAdmin from "./pages/admin/OrdersAdmin";
+import OrderDetailsAdmin from "./pages/admin/OrderDetailsAdmin";
 import Login from "./pages/admin/Login";
 import Register from "./pages/admin/Register";
+
+import ProductPage from "./pages/store/ProductPage";
+import Shop from "./pages/store/Shop";
+import Cart from "./pages/store/Cart";
+import OrdersUser from "./pages/store/OrdersUser";
+import OrderDetailsUser from "./pages/store/OrderDetailsUser";
+import Profile from "./pages/store/Profile";
+import PlaceOrder from "./pages/store/PlaceOrder";
+
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import { ToastContainer } from "react-toastify";
 
 import "./App.css";
 import "react-toastify/dist/ReactToastify.css";
-import ContactUs from "./pages/ContactUs";
-import AboutUs from "./pages/AboutUs";
-import PlaceOrder from "./pages/store/PlaceOrder";
+
+
 
 function App() {
-	const { user } = useAppContext();
+	const { user, isAdmin } = useAppContext();
 
 	return (
 		<>
@@ -43,32 +54,53 @@ function App() {
 					element={<AboutUs />}
 				/>
 				<Route
+					path='/privacy-policy'
+					element={<PrivacyPolicy />}
+				/>
+				<Route
+					path='/terms'
+					element={<Terms />}
+				/>
+				<Route
 					path='/shop'
 					element={<Shop />}
 				/>
 				<Route
 					path='/shop/products/:productId'
-					element={<ProductPage/>}
+					element={<ProductPage />}
 				/>
 				<Route
 					path='/shop/cart'
 					element={<Cart />}
 				/>
 				<Route
-					path="/login"
+					path='/shop/login'
 					element={<Login />}
+				/>
+
+				<Route
+					path='/shop/register'
+					element={<Register />}
 				/>
 				<Route
 					path='/shop/place-order'
 					element={<PlaceOrder />}
 				/>
 				<Route
-					path='/admin/store'
-					element={user ? <StoreDashboard /> : <Login />}
+					path='/shop/orders'
+					element={<OrdersUser />}
 				/>
 				<Route
-					path='/admin/register'
-					element={<Register />}
+					path='/shop/orders/:id'
+					element={<OrderDetailsUser />}
+				/>
+				<Route
+				path="/shop/profile"
+				element={user ? <Profile/>:<Login />}
+				/>
+				<Route
+					path='/admin/store'
+					element={isAdmin ? <StoreDashboard /> : <Login />}
 				/>
 				<Route
 					path='/admin/store/add-product'
@@ -84,11 +116,11 @@ function App() {
 				/>
 				<Route
 					path='/admin/store/orders'
-					element={<Orders />}
+					element={<OrdersAdmin />}
 				/>
 				<Route
 					path='/admin/store/orders/:id'
-					element={<OrderDetails />}
+					element={<OrderDetailsAdmin />}
 				/>
 			</Routes>
 			<Footer />

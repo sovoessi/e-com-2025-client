@@ -9,7 +9,7 @@ const Footer = () => (
 			</div>
 			<div className='flex gap-6'>
 				<Link
-					to='/privacy'
+					to='/privacy-policy'
 					className='text-gray-500 hover:text-blue-600 text-sm transition'
 				>
 					Privacy Policy
