@@ -12,6 +12,8 @@ export const AppProvider = ({ children }) => {
 	const [error, setError] = useState(null);
 	const [token, setToken] = useState(null);
 	const [user, setUser] = useState(null);
+	const [authLoaded, setAuthLoaded] = useState(false);
+
 	const isAdmin = useMemo(() => user?.role === "admin", [user]);
 	const navigate = useNavigate();
 
@@ -166,7 +168,27 @@ export const AppProvider = ({ children }) => {
 	const handlePlaceOrder = async (orderData) => {
 		setLoading(true);
 		try {
-			const response = await axios.post(`${API_URL}/orders`, orderData, {
+			// Format shipping address as a string
+			const {
+				delivery,
+				paymentMethod,
+				products,
+				totalAmount
+			} = orderData;
+
+			const shippingAddress = `${delivery.name}, ${delivery.address}, ${delivery.city}, ${delivery.postal}, ${delivery.country}, ${delivery.phone}, ${delivery.email}`;
+
+			const payload = {
+				products: products.map(item => ({
+					productId: item.productId || item.id, // support both keys
+					quantity: item.quantity
+				})),
+				totalAmount,
+				shippingAddress,
+				paymentMethod
+			};
+
+			const response = await axios.post(`${API_URL}/orders`, payload, {
 				headers: {
 					Authorization: `Bearer ${token}`,
 				},
@@ -175,7 +197,7 @@ export const AppProvider = ({ children }) => {
 			navigate("/orders");
 			return response.data;
 		} catch (err) {
-			setError(err.message);
+			setError(err.response?.data?.message || err.message);
 			toast.error("Failed to place order.");
 			return null;
 		} finally {
@@ -198,6 +220,7 @@ export const AppProvider = ({ children }) => {
 		setUser(null);
 		sessionStorage.removeItem("token");
 		sessionStorage.removeItem("user");
+		localStorage.removeItem("token");
 		navigate("/");
 		toast("Logged out successfully!");
 	};
@@ -208,6 +231,7 @@ export const AppProvider = ({ children }) => {
 		const storedUser = sessionStorage.getItem("user");
 		if (storedToken) setToken(storedToken);
 		if (storedUser) setUser(JSON.parse(storedUser));
+		setAuthLoaded(true); // Mark auth as loaded
 	}, []);
 
 	const contextValue = useMemo(
@@ -230,8 +254,9 @@ export const AppProvider = ({ children }) => {
 			register,
 			handleLogin,
 			handleLogout,
+			authLoaded,
 		}),
-		[loading, error, token, user, isAdmin, navigate]
+		[loading, error, token, user, isAdmin, navigate,authLoaded]
 	);
 
 	return (

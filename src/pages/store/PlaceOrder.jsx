@@ -63,15 +63,13 @@ const PlaceOrder = () => {
 	});
 	const [payment, setPayment] = useState("stripe");
 
-	const { toast, handlePlaceOrder } = useAppContext();
+	const { toast, handlePlaceOrder, user, navigate, authLoaded } = useAppContext();
 
-	// Replace mockCart with cart from localStorage
 	const [cart, setCart] = useState(() => {
 		const stored = localStorage.getItem("cart");
 		return stored ? JSON.parse(stored) : [];
 	});
 
-	// Optionally, update cart if localStorage changes elsewhere
 	useEffect(() => {
 		const handleStorage = () => {
 			const stored = localStorage.getItem("cart");
@@ -80,6 +78,14 @@ const PlaceOrder = () => {
 		window.addEventListener("storage", handleStorage);
 		return () => window.removeEventListener("storage", handleStorage);
 	}, []);
+
+	// 🚩 Redirect to login if not authenticated
+	useEffect(() => {
+		if (authLoaded && !user) {
+			toast("Please log in to place an order.");
+			navigate("/shop/login");
+		}
+	}, [user, toast, navigate, authLoaded]);
 
 	const handleDeliveryChange = (e) => {
 		setDelivery({ ...delivery, [e.target.name]: e.target.value });
@@ -91,18 +97,24 @@ const PlaceOrder = () => {
 
 	const handlePlaceOrderClick = (e) => {
 		e.preventDefault();
-		// ...order logic...
+		if (!user) {
+			toast("You must be logged in to place an order.");
+			navigate("/shop/login");
+			return;
+		}
 		if (cart.length === 0) {
 			toast("Your cart is empty. Please add items before placing an order.");
 			return;
 		}
+		const paymentMethod =
+			payment === "stripe" ? "credit_card" : payment === "paypal" ? "paypal" : payment;
+
 		const orderData = {
 			delivery,
-			paymentMethod: payment,
+			paymentMethod,
 			products: cart.map((item) => ({
 				productId: item.id,
 				quantity: item.quantity,
-				price: item.price,
 			})),
 			totalAmount: cart.reduce(
 				(sum, item) => sum + item.price * item.quantity,
@@ -114,10 +126,12 @@ const PlaceOrder = () => {
 				toast("Order placed successfully!");
 			})
 			.catch((error) => {
-				toast.error("Failed to place order: " + error.message);
+				toast.error(
+					"Failed to place order: " +
+						(error?.response?.data?.message || error.message)
+				);
 			});
-		// Clear localStorage cart and reset state
-		localStorage.removeItem("cart"); // Clear cart after order
+		localStorage.removeItem("cart");
 		setCart([]);
 	};
 
