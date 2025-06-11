@@ -180,7 +180,7 @@ export const AppProvider = ({ children }) => {
 
 			const payload = {
 				products: products.map(item => ({
-					productId: item.productId || item.id, // support both keys
+					productId: item.productId,
 					quantity: item.quantity
 				})),
 				totalAmount,

@@ -106,6 +106,13 @@ const PlaceOrder = () => {
 			toast("Your cart is empty. Please add items before placing an order.");
 			return;
 		}
+
+		if (cart.some(item => !item._id)) {
+			toast.error("Cart contains invalid products. Please refresh and try again.");
+			return;
+		}
+
+
 		const paymentMethod =
 			payment === "stripe" ? "credit_card" : payment === "paypal" ? "paypal" : payment;
 
@@ -113,7 +120,7 @@ const PlaceOrder = () => {
 			delivery,
 			paymentMethod,
 			products: cart.map((item) => ({
-				productId: item.id,
+				productId: item._id, // <-- always use _id from cart as productId
 				quantity: item.quantity,
 			})),
 			totalAmount: cart.reduce(
