@@ -203,6 +203,25 @@ export const AppProvider = ({ children }) => {
 		}
 	}
 
+	const fetchOrderById = async (id) => {
+		setLoading(true);
+		try {
+			const response = await axios.get(`${API_URL}/orders/${id}`, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+			return response.data;
+		} catch (err) {
+			const msg = err.response?.data?.message || err.message;
+			setError(msg);
+			toast.error("Failed to fetch order: " + msg);
+			return null;
+		} finally {
+			setLoading(false);
+		}
+	};
+
 	const handlePlaceOrder = async (orderData) => {
 		setLoading(true);
 		try {
@@ -281,6 +300,7 @@ export const AppProvider = ({ children }) => {
 			fetchUserProfile,
 			fetchOrders,
 			fetchOrdersAdmin,
+			fetchOrderById,
 			handlePlaceOrder,
 			token,
 			user,
