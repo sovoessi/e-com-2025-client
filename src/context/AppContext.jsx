@@ -197,8 +197,9 @@ export const AppProvider = ({ children }) => {
 			navigate("/orders");
 			return response.data;
 		} catch (err) {
-			setError(err.response?.data?.message || err.message);
-			toast.error("Failed to place order.");
+			const msg = err.response?.data?.message || err.message;
+			setError(msg);
+			toast.error("Failed to place order: " + msg);
 			return null;
 		} finally {
 			setLoading(false);

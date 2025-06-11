@@ -95,7 +95,7 @@ const PlaceOrder = () => {
 		setPayment(e.target.value);
 	};
 
-	const handlePlaceOrderClick = (e) => {
+	const handlePlaceOrderClick = async (e) => {
 		e.preventDefault();
 		if (!user) {
 			toast("You must be logged in to place an order.");
@@ -121,19 +121,13 @@ const PlaceOrder = () => {
 				0
 			),
 		};
-		handlePlaceOrder(orderData)
-			.then(() => {
-				toast("Order placed successfully!");
-			})
-			.catch((error) => {
-				toast.error(
-					"Failed to place order: " +
-						(error?.response?.data?.message || error.message)
-				);
-			});
-		localStorage.removeItem("cart");
-		setCart([]);
-	};
+		const result = await handlePlaceOrder(orderData);
+		if (result) {
+			localStorage.removeItem("cart");
+			setCart([]);
+			// No need to show toast here, it's handled in context
+		}
+	}
 
 	return (
 		<main className='bg-gray-50 min-h-screen py-10'>
