@@ -11,8 +11,6 @@ const statusColors = {
 	processing: "bg-yellow-100 text-yellow-700",
 };
 
-// "pending", "shipped", "delivered", "cancelled"
-
 const OrdersAdmin = () => {
 	const [orders, setOrders] = useState([]);
 	const { fetchOrdersAdmin } = useAppContext();
@@ -20,12 +18,10 @@ const OrdersAdmin = () => {
 	useEffect(() => {
 		const loadOrders = async () => {
 			const data = await fetchOrdersAdmin();
-			console.log("Fetched orders:", data);
 			if (!data || !Array.isArray(data)) {
 				console.error("Invalid data format:", data);
 				return;
 			}
-			console.log("Orders data:", data[0]);
 			setOrders(data);
 		};
 		loadOrders();

@@ -10,36 +10,58 @@ const statusColors = {
 	processing: "bg-yellow-100 text-yellow-700",
 };
 
-const statusOptions = ["Processing", "Shipped", "Delivered"];
+const statusOptions = [
+	"pending",
+	"processing",
+	"shipped",
+	"delivered",
+	"cancelled",
+];
 
 const OrderDetailsAdmin = () => {
-	const { id } = useParams(); // <-- match param name from route: /admin/store/orders/:id
-	const [orders, setOrders] = useState([]);
-
-	const { fetchOrdersAdmin, navigate } = useAppContext();
+	const { id } = useParams();
+	const { fetchOrderById, navigate } = useAppContext();
+	const [order, setOrder] = useState(null);
+	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
-		const loadOrders = async () => {
-			const data = await fetchOrdersAdmin();
-			if (!data || !Array.isArray(data)) {
-				console.error("Invalid data format:", data);
-				return;
-			}
-			setOrders(data);
+		const loadOrder = async () => {
+			setLoading(true);
+			const data = await fetchOrderById(id);
+			setOrder(data);
+			setLoading(false);
 		};
-		loadOrders();
-	}, []);
+		loadOrder();
+	}, [id, fetchOrderById]);
 
-	const orderIndex = orders.findIndex((o) => o._id === id);
-	const order = orders[orderIndex];
-
-	const handleStatusChange = (e) => {
+	const handleStatusChange = async (e) => {
 		const newStatus = e.target.value;
-		const updatedOrders = [...orders];
-		updatedOrders[orderIndex] = { ...order, status: newStatus };
-		setOrders(updatedOrders);
-		// In production, trigger API update here
+		// Optimistically update UI
+		setOrder((prev) => ({ ...prev, status: newStatus }));
+		// Update backend
+		try {
+			await fetch(`${import.meta.env.VITE_API_URL}/orders/${id}`, {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${order?.userId?.token || ""}`,
+				},
+				body: JSON.stringify({ status: newStatus }),
+			});
+		} catch (err) {
+			// Optionally: revert UI and show error
+			setOrder((prev) => ({ ...prev, status: order.status }));
+			console.error("Failed to update order status:", err);
+		}
 	};
+
+	if (loading) {
+		return (
+			<main className='bg-gray-50 min-h-screen py-10 flex items-center justify-center'>
+				<div className='text-gray-500'>Loading order details...</div>
+			</main>
+		);
+	}
 
 	if (!order) {
 		return (
@@ -88,11 +110,8 @@ const OrderDetailsAdmin = () => {
 								aria-label='Update order status'
 							>
 								{statusOptions.map((status) => (
-									<option
-										key={status}
-										value={status}
-									>
-										{status}
+									<option key={status} value={status}>
+										{status.charAt(0).toUpperCase() + status.slice(1)}
 									</option>
 								))}
 							</select>
@@ -106,19 +125,21 @@ const OrderDetailsAdmin = () => {
 							</span>
 						</span>
 						<span className='text-lg font-bold text-blue-600'>
-							Total: {order.totalAmount.toFixed(2)}
+							Total: ${order.totalAmount.toFixed(2)}
 						</span>
 					</div>
 					<div className='mb-4'>
 						<div className='font-semibold text-gray-800 mb-1'>Customer</div>
-						<div className='text-gray-700 text-sm'>{order.userId.email}</div>
+						<div className='text-gray-700 text-sm'>{order.userId?.email}</div>
 					</div>
 					{order.shippingAddress && (
 						<div className='mb-6'>
 							<div className='font-semibold text-gray-800 mb-1'>
 								Shipping Address
 							</div>
-							<div className='text-gray-600 text-sm'>{order.shippingAddress}</div>
+							<div className='text-gray-600 text-sm'>
+								{order.shippingAddress}
+							</div>
 						</div>
 					)}
 					<div>
