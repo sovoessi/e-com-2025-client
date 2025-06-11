@@ -1,49 +1,35 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
-// Demo data, replace with API call in production
-const initialOrders = [
-	{
-		id: "ORD-1001",
-		date: "2025-06-01",
-		status: "Delivered",
-		total: "$93",
-		customer: "Jane Doe",
-		address: "123 Main St, Springfield, USA",
-		items: [
-			{ name: "Men's Classic T-Shirt", qty: 1, price: "$29" },
-			{ name: "Ceramic Coffee Mug", qty: 2, price: "$30" },
-			{ name: "Unisex Baseball Cap", qty: 1, price: "$22" },
-		],
-	},
-	{
-		id: "ORD-1002",
-		date: "2025-05-20",
-		status: "Shipped",
-		total: "$39",
-		customer: "John Smith",
-		address: "456 Oak Ave, Springfield, USA",
-		items: [{ name: "Women's Summer Sandals", qty: 1, price: "$39" }],
-	},
-	{
-		id: "ORD-1003",
-		date: "2025-05-10",
-		status: "Processing",
-		total: "$19",
-		customer: "Emily Clark",
-		address: "789 Pine Rd, Springfield, USA",
-		items: [{ name: "Kids' Fun Tote Bag", qty: 1, price: "$19" }],
-	},
-];
+import { useAppContext } from "../../context/AppContext";
 
 const statusColors = {
-	Delivered: "bg-green-100 text-green-700",
-	Shipped: "bg-blue-100 text-blue-700",
-	Processing: "bg-yellow-100 text-yellow-700",
+	pending: "bg-gray-100 text-gray-700",
+	cancelled: "bg-red-100 text-red-700",
+	delivered: "bg-green-100 text-green-700",
+	shipped: "bg-blue-100 text-blue-700",
+	processing: "bg-yellow-100 text-yellow-700",
 };
 
+// "pending", "shipped", "delivered", "cancelled"
+
 const OrdersAdmin = () => {
-	const [orders] = useState(initialOrders);
+	const [orders, setOrders] = useState([]);
+	const { fetchOrdersAdmin } = useAppContext();
+
+	useEffect(() => {
+		const loadOrders = async () => {
+			const data = await fetchOrdersAdmin();
+			console.log("Fetched orders:", data);
+			if (!data || !Array.isArray(data)) {
+				console.error("Invalid data format:", data);
+				return;
+			}
+			console.log("Orders data:", data[0]);
+			setOrders(data);
+		};
+		loadOrders();
+	}, [fetchOrdersAdmin]);
 
 	return (
 		<main className='bg-gray-50 min-h-screen py-10'>
@@ -76,10 +62,12 @@ const OrdersAdmin = () => {
 										className='border-b last:border-0 hover:bg-blue-50 transition'
 									>
 										<td className='py-3 px-4 font-bold text-blue-700'>
-											{order.id}
+											{order._id}
 										</td>
-										<td className='px-4'>{order.date}</td>
-										<td className='px-4'>{order.customer}</td>
+										<td className='px-4'>
+											{new Date(order.createdAt).toLocaleDateString()}
+										</td>
+										<td className='px-4'>{order.userId.email}</td>
 										<td className='px-4'>
 											<span
 												className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
@@ -90,15 +78,17 @@ const OrdersAdmin = () => {
 												{order.status}
 											</span>
 										</td>
-										<td className='px-4 font-semibold'>{order.total}</td>
+										<td className='px-4 font-semibold'>
+											${order.totalAmount?.toFixed(2)}
+										</td>
 										<td className='px-4 text-xs text-gray-500 max-w-xs truncate'>
-											{order.address}
+											{order.shippingAddress}
 										</td>
 										<td className='px-4'>
 											<Link
-												to={`/admin/store/orders/${order.id}`}
+												to={`/admin/store/orders/${order._id}`}
 												className='text-blue-600 hover:underline font-medium text-sm'
-												aria-label={`View details for order ${order.id}`}
+												aria-label={`View details for order ${order._id}`}
 											>
 												View Details
 											</Link>

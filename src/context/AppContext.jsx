@@ -165,27 +165,60 @@ export const AppProvider = ({ children }) => {
 		}
 	};
 
+	const fetchOrders = async () => {
+		setLoading(true);
+		try {
+			const response = await axios.get(`${API_URL}/orders`, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+			return response.data;
+		} catch (err) {
+			const msg = err.response?.data?.message || err.message;
+			setError(msg);
+			toast.error("Failed to fetch orders: " + msg);
+			return [];
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	const fetchOrdersAdmin = async () => {
+		setLoading(true);
+		try {
+			const response = await axios.get(`${API_URL}/orders/admin`, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+			return response.data;
+		} catch (err) {
+			const msg = err.response?.data?.message || err.message;
+			setError(msg);
+			toast.error("Failed to fetch orders: " + msg);
+			return [];
+		} finally {
+			setLoading(false);
+		}
+	}
+
 	const handlePlaceOrder = async (orderData) => {
 		setLoading(true);
 		try {
 			// Format shipping address as a string
-			const {
-				delivery,
-				paymentMethod,
-				products,
-				totalAmount
-			} = orderData;
+			const { delivery, paymentMethod, products, totalAmount } = orderData;
 
 			const shippingAddress = `${delivery.name}, ${delivery.address}, ${delivery.city}, ${delivery.postal}, ${delivery.country}, ${delivery.phone}, ${delivery.email}`;
 
 			const payload = {
-				products: products.map(item => ({
+				products: products.map((item) => ({
 					productId: item.productId,
-					quantity: item.quantity
+					quantity: item.quantity,
 				})),
 				totalAmount,
 				shippingAddress,
-				paymentMethod
+				paymentMethod,
 			};
 
 			const response = await axios.post(`${API_URL}/orders`, payload, {
@@ -194,7 +227,7 @@ export const AppProvider = ({ children }) => {
 				},
 			});
 			toast("Order placed successfully!");
-			navigate("/orders");
+			navigate("/shop/orders");
 			return response.data;
 		} catch (err) {
 			const msg = err.response?.data?.message || err.message;
@@ -204,7 +237,7 @@ export const AppProvider = ({ children }) => {
 		} finally {
 			setLoading(false);
 		}
-	}
+	};
 
 	// Handle user login
 	const handleLogin = (userData) => {
@@ -246,6 +279,8 @@ export const AppProvider = ({ children }) => {
 			deleteProductById,
 			createProduct,
 			fetchUserProfile,
+			fetchOrders,
+			fetchOrdersAdmin,
 			handlePlaceOrder,
 			token,
 			user,
@@ -257,7 +292,7 @@ export const AppProvider = ({ children }) => {
 			handleLogout,
 			authLoaded,
 		}),
-		[loading, error, token, user, isAdmin, navigate,authLoaded]
+		[loading, error, token, user, isAdmin, navigate, authLoaded]
 	);
 
 	return (

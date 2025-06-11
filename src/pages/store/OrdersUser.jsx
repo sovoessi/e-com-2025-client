@@ -1,27 +1,6 @@
-import React from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-
-const mockOrders = [
-  {
-    id: "1001",
-    date: "2025-06-01",
-    total: 129.97,
-    status: "Shipped",
-    items: [
-      { name: "Premium Hoodie", qty: 2, image: "/images/hoodie.jpg" },
-      { name: "Classic Sneakers", qty: 1, image: "/images/sneakers.jpg" },
-    ],
-  },
-  {
-    id: "1000",
-    date: "2025-05-20",
-    total: 49.99,
-    status: "Delivered",
-    items: [
-      { name: "Premium Hoodie", qty: 1, image: "/images/hoodie.jpg" },
-    ],
-  },
-];
+import { useAppContext } from "../../context/AppContext";
 
 const statusColors = {
   Shipped: "bg-blue-100 text-blue-700",
@@ -31,13 +10,24 @@ const statusColors = {
 };
 
 const OrdersUser = () => {
+  const [orders, setOrders] = useState([]);
+  const { fetchOrders } = useAppContext();
+
+  useEffect(() => {
+    const loadOrders = async () => {
+      const data = await fetchOrders();
+      setOrders(data);
+    };
+    loadOrders();
+  }, [fetchOrders]);
+
   return (
     <main className="bg-gray-50 min-h-screen py-10">
       <div className="max-w-4xl mx-auto px-4">
         <h1 className="text-3xl font-extrabold mb-8 text-gray-900">
           My Orders
         </h1>
-        {mockOrders.length === 0 ? (
+        {orders.length === 0 ? (
           <div className="bg-white rounded-xl shadow p-8 text-center">
             <p className="text-gray-500 mb-4">You have no orders yet.</p>
             <Link
@@ -61,10 +51,10 @@ const OrdersUser = () => {
                 </tr>
               </thead>
               <tbody>
-                {mockOrders.map((order) => (
-                  <tr key={order.id} className="border-b last:border-0">
-                    <td className="py-3 font-bold text-blue-700">{order.id}</td>
-                    <td>{order.date}</td>
+                {orders.map((order) => (
+                  <tr key={order._id} className="border-b last:border-0">
+                    <td className="py-3 font-bold text-blue-700">{order._id}</td>
+                    <td>{new Date(order.createdAt).toLocaleDateString()}</td>
                     <td>
                       <span
                         className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
@@ -76,24 +66,24 @@ const OrdersUser = () => {
                       </span>
                     </td>
                     <td className="font-semibold">
-                      ${order.total.toFixed(2)}
+                      ${order.totalAmount?.toFixed(2)}
                     </td>
                     <td>
                       <div className="flex -space-x-2">
-                        {order.items.map((item, idx) => (
+                        {order.products.map((item, idx) => (
                           <img
                             key={idx}
-                            src={item.image}
-                            alt={item.name}
+                            src={item.productId?.images?.[0] || "/placeholder.png"}
+                            alt={item.productId?.name || "Product"}
                             className="w-8 h-8 rounded border bg-gray-100"
-                            title={item.name}
+                            title={item.productId?.name}
                           />
                         ))}
                       </div>
                     </td>
                     <td>
                       <Link
-                        to={`/shop/orders/${order.id}`}
+                        to={`/shop/orders/${order._id}`}
                         className="text-blue-600 hover:underline font-medium text-sm"
                       >
                         View Details

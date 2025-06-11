@@ -1,55 +1,36 @@
-import React, { useState } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
-
-// Demo data, replace with API call in production
-const initialOrders = [
-	{
-		id: "ORD-1001",
-		date: "2025-06-01",
-		status: "Delivered",
-		total: "$93",
-		customer: "Jane Doe",
-		address: "123 Main St, Springfield, USA",
-		items: [
-			{ name: "Men's Classic T-Shirt", qty: 1, price: "$29" },
-			{ name: "Ceramic Coffee Mug", qty: 2, price: "$30" },
-			{ name: "Unisex Baseball Cap", qty: 1, price: "$22" },
-		],
-	},
-	{
-		id: "ORD-1002",
-		date: "2025-05-20",
-		status: "Shipped",
-		total: "$39",
-		customer: "John Smith",
-		address: "456 Oak Ave, Springfield, USA",
-		items: [{ name: "Women's Summer Sandals", qty: 1, price: "$39" }],
-	},
-	{
-		id: "ORD-1003",
-		date: "2025-05-10",
-		status: "Processing",
-		total: "$19",
-		customer: "Emily Clark",
-		address: "789 Pine Rd, Springfield, USA",
-		items: [{ name: "Kids' Fun Tote Bag", qty: 1, price: "$19" }],
-	},
-];
+import { useState, useEffect } from "react";
+import { useParams, Link } from "react-router-dom";
+import { useAppContext } from "../../context/AppContext";
 
 const statusColors = {
-	Delivered: "bg-green-100 text-green-700",
-	Shipped: "bg-blue-100 text-blue-700",
-	Processing: "bg-yellow-100 text-yellow-700",
+	pending: "bg-gray-100 text-gray-700",
+	cancelled: "bg-red-100 text-red-700",
+	delivered: "bg-green-100 text-green-700",
+	shipped: "bg-blue-100 text-blue-700",
+	processing: "bg-yellow-100 text-yellow-700",
 };
 
 const statusOptions = ["Processing", "Shipped", "Delivered"];
 
 const OrderDetailsAdmin = () => {
 	const { id } = useParams(); // <-- match param name from route: /admin/store/orders/:id
-	const navigate = useNavigate();
-	const [orders, setOrders] = useState(initialOrders);
+	const [orders, setOrders] = useState([]);
 
-	const orderIndex = orders.findIndex((o) => o.id === id);
+	const { fetchOrdersAdmin, navigate } = useAppContext();
+
+	useEffect(() => {
+		const loadOrders = async () => {
+			const data = await fetchOrdersAdmin();
+			if (!data || !Array.isArray(data)) {
+				console.error("Invalid data format:", data);
+				return;
+			}
+			setOrders(data);
+		};
+		loadOrders();
+	}, []);
+
+	const orderIndex = orders.findIndex((o) => o._id === id);
 	const order = orders[orderIndex];
 
 	const handleStatusChange = (e) => {
@@ -90,7 +71,7 @@ const OrderDetailsAdmin = () => {
 				<div className='bg-white rounded-2xl shadow-lg p-8 border border-gray-100'>
 					<div className='flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-2'>
 						<h1 className='text-2xl font-bold text-gray-900'>
-							Order <span className='text-blue-600'>{order.id}</span>
+							Order <span className='text-blue-600'>{order._id}</span>
 						</h1>
 						<div className='flex items-center gap-2'>
 							<span
@@ -120,42 +101,44 @@ const OrderDetailsAdmin = () => {
 					<div className='mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2'>
 						<span className='text-gray-500 text-sm'>
 							Placed on{" "}
-							<span className='font-medium text-gray-700'>{order.date}</span>
+							<span className='font-medium text-gray-700'>
+								{new Date(order.createdAt).toLocaleDateString()}
+							</span>
 						</span>
 						<span className='text-lg font-bold text-blue-600'>
-							Total: {order.total}
+							Total: {order.totalAmount.toFixed(2)}
 						</span>
 					</div>
 					<div className='mb-4'>
-						<div className='font-semibold text-gray-800 mb-1'>
-							Customer
-						</div>
-						<div className='text-gray-700 text-sm'>{order.customer}</div>
+						<div className='font-semibold text-gray-800 mb-1'>Customer</div>
+						<div className='text-gray-700 text-sm'>{order.userId.email}</div>
 					</div>
-					{order.address && (
+					{order.shippingAddress && (
 						<div className='mb-6'>
 							<div className='font-semibold text-gray-800 mb-1'>
 								Shipping Address
 							</div>
-							<div className='text-gray-600 text-sm'>{order.address}</div>
+							<div className='text-gray-600 text-sm'>{order.shippingAddress}</div>
 						</div>
 					)}
 					<div>
 						<div className='font-semibold text-gray-800 mb-3'>Items</div>
 						<div className='divide-y border rounded-lg overflow-hidden'>
-							{order.items.map((item, idx) => (
+							{order.products.map((item, idx) => (
 								<div
 									key={idx}
 									className='flex justify-between items-center py-3 px-4 bg-gray-50 even:bg-white'
 								>
 									<span className='flex-1 text-gray-800'>
-										{item.name}
+										{item.productId?.name || "Unknown Product"}
 										<span className='ml-2 text-gray-400 font-normal'>
-											x{item.qty}
+											x{item.quantity}
 										</span>
 									</span>
 									<span className='font-medium text-gray-700'>
-										{item.price}
+										{item.productId?.price !== undefined
+											? `$${item.productId.price.toFixed(2)}`
+											: "N/A"}
 									</span>
 								</div>
 							))}
